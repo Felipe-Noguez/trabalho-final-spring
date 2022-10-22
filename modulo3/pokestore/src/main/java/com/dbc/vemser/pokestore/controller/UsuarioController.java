@@ -54,7 +54,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{idUsuario}") // localhost:1521/pessoa/10
-    public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException {
+    public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Deletando a pessoa");
 
         usuarioService.remover(id);
