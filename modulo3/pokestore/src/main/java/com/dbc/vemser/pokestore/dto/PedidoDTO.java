@@ -7,9 +7,9 @@ public class PedidoDTO extends PedidoCreateDTO {
 
     @NotNull
     @Positive
-    private int idPedido;
+    private Integer idPedido;
 
     @NotNull
     @Positive
-    private int idUsuario;
+    private Integer idUsuario;
 }

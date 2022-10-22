@@ -1,11 +1,16 @@
 package com.dbc.vemser.pokestore.service;
 
+import com.dbc.vemser.pokestore.dto.CupomDTO;
+import com.dbc.vemser.pokestore.dto.PedidoCreateDTO;
+import com.dbc.vemser.pokestore.dto.PedidoDTO;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
+import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.PedidoRepository;
 import com.dbc.vemser.pokestore.entity.Cupom;
 import com.dbc.vemser.pokestore.entity.Pedido;
 import com.dbc.vemser.pokestore.entity.ProdutoPedido;
 import com.dbc.vemser.pokestore.repository.ProdutoPedidoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -21,23 +26,20 @@ public class PedidoService {
 
     private final ProdutoPedidoRepository produtoPedidoRepository;
 
+    private final ObjectMapper objectMapper;
+
 
     // criação de um objeto
-    public Pedido adicionarPedido(Pedido pedido) { // vai adicionar tudo dentro da tabela N para N (Pedido_Produto)
-        try {
-            Double valorFinalPedido = calcularValorFinal(pedido);
-            pedido.setValorFinal(valorFinalPedido);
-            Pedido pedidoAdicionado = pedidoRepository.adicionar(pedido);
-            for (ProdutoPedido produtoPedido : pedidoAdicionado.getProdutosPedido()) {
-                produtoPedido.setPedido(pedidoAdicionado);
-                produtoPedidoRepository.adicionar(produtoPedido);
-            }
-            System.out.println("Pedido adicionado com sucesso! " + pedidoAdicionado);
-            return pedidoAdicionado;
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
+    public PedidoDTO adicionarPedido(PedidoCreateDTO pedido) throws BancoDeDadosException, RegraDeNegocioException { // vai adicionar tudo dentro da tabela N para N (Pedido_Produto)
+        Pedido pedidoEntity = objectMapper.convertValue(pedido, Pedido.class);
+        for (ProdutoPedido produtoPedido : pedidoEntity.getProdutosPedido()) {
+            produtoPedido.setPedido(pedidoEntity);
+            produtoPedidoRepository.adicionar(produtoPedido);
         }
-        return null;
+        PedidoDTO pedidoDTO = objectMapper.convertValue(pedidoRepository.adicionar(pedidoEntity), PedidoDTO.class);
+
+        System.out.println("Pedido adicionado com sucesso! " + pedidoEntity);
+            return pedidoDTO;
     }
 
     //Calculo valor final
@@ -77,24 +79,29 @@ public class PedidoService {
     }
 
     // atualização de um objeto
-    public void editarPedido(Integer id, Pedido pedido) {
-        try {
-            boolean conseguiuEditar = pedidoRepository.editar(id, pedido);
-            System.out.println("Pedido editado? " + conseguiuEditar + "| com id=" + id);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        }
+    public PedidoDTO editarPedido(Integer id, PedidoCreateDTO pedido) throws BancoDeDadosException, RegraDeNegocioException{
+        Pedido pedidoRecuperado = findById(id);
+        pedidoRepository.editar(id, pedidoRecuperado);
+        boolean conseguiuEditar = pedidoRepository.editar(id, pedidoRecuperado);
+        System.out.println("Pedido editado? " + conseguiuEditar + "| com id=" + id);
+        PedidoDTO pedidoDTO = objectMapper.convertValue(pedidoRecuperado, PedidoDTO.class);
+        return pedidoDTO;
+
     }
 
     // leitura
-    public void listarPedido() {
-        try {
-            List<Pedido> listar = pedidoRepository.listar();
-            listar.forEach(System.out::println);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        }
+    public List<PedidoDTO> listarPedido() {
+            return pedidoRepository.listar().stream()
+                .map(pedido -> objectMapper.convertValue(pedido, PedidoDTO.class))
+                .toList();
     }
 
+    public Pedido findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        Pedido pedidoRecuperado = pedidoRepository.listar().stream()
+                .filter(pedido -> pedido.getIdPedido().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RegraDeNegocioException("Pedido não encontrado"));
+        return pedidoRecuperado;
+    }
 
 }

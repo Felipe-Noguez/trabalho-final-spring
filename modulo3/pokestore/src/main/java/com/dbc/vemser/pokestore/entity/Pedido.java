@@ -23,11 +23,11 @@ public class Pedido {
 
     @NotNull
     @Positive
-    private int idPedido;
+    private Integer idPedido;
 
     @NotNull
     @Positive
-    private int idUsuario;
+    private Integer idUsuario;
 
     @Positive
     private double valorFinal;
