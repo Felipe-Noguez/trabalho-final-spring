@@ -36,7 +36,8 @@ public class CupomService {
 
     // atualização de um objeto
     public CupomDTO editarCupom(Integer id, CupomCreateDTO cupom) throws BancoDeDadosException, RegraDeNegocioException {
-            Cupom cupomRecuperado = findById(id);
+            Cupom cupomRecuperado = objectMapper.convertValue(cupom, Cupom.class);
+            cupomRecuperado = findById(id);
             cupomRepository.editar(id, cupomRecuperado);
             boolean conseguiuEditar = cupomRepository.editar(id, cupomRecuperado);
             System.out.println("Cupom editado? " + conseguiuEditar + "| com id=" + id);

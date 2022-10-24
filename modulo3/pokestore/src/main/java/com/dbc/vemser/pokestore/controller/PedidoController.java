@@ -23,7 +23,7 @@ import java.util.List;
 
 public class PedidoController {
 
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
 
     @GetMapping
     public List<PedidoDTO> list() throws RegraDeNegocioException, BancoDeDadosException {

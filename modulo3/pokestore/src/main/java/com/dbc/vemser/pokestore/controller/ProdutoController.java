@@ -18,13 +18,12 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/produto")
 public class ProdutoController {
 
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
 
     @GetMapping
     public List<ProdutoDTO> list() throws RegraDeNegocioException, BancoDeDadosException {

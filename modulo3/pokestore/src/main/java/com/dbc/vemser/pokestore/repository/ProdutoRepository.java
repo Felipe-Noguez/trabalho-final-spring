@@ -177,7 +177,13 @@ public class ProdutoRepository implements Repositorio<Integer, Produto> {
                 produto.setNome(res.getString("NOME"));
                 produto.setDescricao(res.getString("DESCRICAO"));
                 produto.setQuantidade(res.getInt("QUANTIDADE"));
-                produto.setTipo(Tipos.ofTipo(res.getString("TIPO")));
+                if(res.getString("TIPO").equalsIgnoreCase("0")){
+                    produto.setTipo(Tipos.JOGOS);
+                } else if (res.getString("TIPO").equalsIgnoreCase("1")){
+                    produto.setTipo(Tipos.CONSOLE);
+                } else {
+                    produto.setTipo(Tipos.COLECIONAVEL);
+                }
                 produto.setValor(res.getDouble("VALOR"));
                 produto.setIdUsuario(res.getInt("ID_USUARIO"));
                 produto.setDeletado(res.getString("DELETADO" ));

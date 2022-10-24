@@ -19,10 +19,10 @@ public enum Tipos {
         return tipo;
     }
 
-    public static Tipos ofTipo(String tipo) {
-        return Arrays.stream(Tipos.values())
-                .filter(tp -> tp.getTipos().equals(tipo))
-                .findFirst()
-                .get();
-    }
+//    public static Tipos ofTipo(String tipo) {
+//        return Arrays.stream(Tipos.values())
+//                .filter(tp -> tp.getTipos().equals(tipo))
+//                .findFirst()
+//                .get();
+//    }
 }

@@ -86,11 +86,10 @@ public class PedidoService {
         System.out.println("Pedido editado? " + conseguiuEditar + "| com id=" + id);
         PedidoDTO pedidoDTO = objectMapper.convertValue(pedidoRecuperado, PedidoDTO.class);
         return pedidoDTO;
-
     }
 
     // leitura
-    public List<PedidoDTO> listarPedido() {
+    public List<PedidoDTO> listarPedido() throws BancoDeDadosException {
             return pedidoRepository.listar().stream()
                 .map(pedido -> objectMapper.convertValue(pedido, PedidoDTO.class))
                 .toList();

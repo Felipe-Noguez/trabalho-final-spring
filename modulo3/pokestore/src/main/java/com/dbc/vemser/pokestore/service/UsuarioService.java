@@ -20,18 +20,23 @@ public class UsuarioService {
 
     // criação de um objeto
     public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuario) throws BancoDeDadosException, RegraDeNegocioException {
+
         Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
-        if (usuarioEntity.getCpf().length() != 11) {
-                throw new RegraDeNegocioException("CPF Inválido!");
-        } else if (usuarioEntity.getEmail() != null && usuarioRepository.findByEmail(usuarioEntity)) {
-                throw new RegraDeNegocioException("Email já cadastrado!");
-        } else if (usuarioEntity.getCpf() != null && usuarioRepository.findByCPF(usuarioEntity)) {
-                throw new RegraDeNegocioException("CPF já cadastrado!");
-        } else if (usuarioEntity.getPix() != null && usuarioRepository.findByPix(usuarioEntity)) {
-                throw new RegraDeNegocioException("PIX já cadastrado!");
-        }
+
+//        if (usuarioEntity.getCpf().length() != 11) {
+//                throw new RegraDeNegocioException("CPF Inválido!");
+//        } else if (usuarioEntity.getEmail() != null && usuarioRepository.findByEmail(usuarioEntity)) {
+//                throw new RegraDeNegocioException("Email já cadastrado!");
+//        } else if (usuarioEntity.getCpf() != null && usuarioRepository.findByCPF(usuarioEntity)) {
+//                throw new RegraDeNegocioException("CPF já cadastrado!");
+//        } else if (usuarioEntity.getPix() != null && usuarioRepository.findByPix(usuarioEntity)) {
+//                throw new RegraDeNegocioException("PIX já cadastrado!");
+//        }
+
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.adicionar(usuarioEntity), UsuarioDTO.class);
+
         System.out.println("Usuario adicinado com sucesso! " + usuarioEntity);
+
         return usuarioDTO;
     }
 
@@ -76,4 +81,29 @@ public class UsuarioService {
         return usuarioRecuperado;
     }
 
-    }
+//    public static Usuario fazerLogin(UsuarioService usuarioService, Scanner entrada) {
+//
+//        Usuario usuario = new Usuario();
+//        Usuario resultadoUser = null;
+//
+//        try {
+//            while (true) {
+//                System.out.println("Digite o email ");
+//                usuario.setEmail(entrada.nextLine());
+//                System.out.println("Digite a senha:");
+//                usuario.setSenha(entrada.nextLine());
+//                Usuario usuarioEncontrado = usuarioService.verificarUsuario(usuario);
+//                if (usuarioEncontrado.getEmail().equals(usuario.getEmail()) && usuarioEncontrado.getSenha().equals(usuario.getSenha())) {
+//                    System.out.println("\n" + usuario.getEmail() + " Logado com sucesso!");
+//                    resultadoUser = usuarioEncontrado;
+//                    break;
+//                }
+//            }
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        }
+//        return resultadoUser;
+//    }
+
+
+}

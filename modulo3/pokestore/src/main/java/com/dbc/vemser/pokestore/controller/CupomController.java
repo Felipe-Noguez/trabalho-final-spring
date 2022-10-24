@@ -23,7 +23,7 @@ import java.util.List;
 
 public class CupomController {
 
-    private CupomService cupomService;
+    private final CupomService cupomService;
 
     @GetMapping
     public List<CupomDTO> list() throws RegraDeNegocioException, BancoDeDadosException {

@@ -4,11 +4,13 @@ package com.dbc.vemser.pokestore.repository;
 import com.dbc.vemser.pokestore.config.ConexaoBancoDeDados;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.entity.ProdutoPedido;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class ProdutoPedidoRepository implements Repositorio<Integer, ProdutoPedido> {
 
 

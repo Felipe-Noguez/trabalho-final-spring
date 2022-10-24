@@ -6,52 +6,47 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.hibernate.validator.constraints.br.CPF;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
 @ToString
 public class Usuario {
 
-    @NotNull
-    @Positive
+//    @NotNull
+//    @Positive
     private Integer idUsuario;
 
-    @NotBlank
-    @UniqueElements
+//    @Email
     private String email;
 
-    @NotBlank
+//    @NotNull
     private String senha;
 
-    @NotBlank
+//    @NotBlank
     private String pix;
 
-    @NotNull
+//    @NotNull
     private String nome;
 
-    @NotNull
+//    @NotBlank
     private String endereco;
 
-    @CPF
-    @UniqueElements
+//    @CPF
     private String cpf;
 
-    @NotBlank
+//    @NotNull
     @Size(max = 250)
     private String cidade;
 
-    @NotBlank
+//    @NotNull
     private String estado;
 
-    @NotBlank
+//    @NotBlank
     @Size(max = 12)
     private String telefone;
 
-    @NotBlank
+//    @NotBlank
     private String deletado;
 
     public Usuario(){

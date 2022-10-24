@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/usuario")
 public class UsuarioController {
 
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     @GetMapping// localhost:1521/usuario
     public List<UsuarioDTO> list() throws RegraDeNegocioException, BancoDeDadosException {
@@ -38,7 +38,7 @@ public class UsuarioController {
 
         log.info("Usuario criado com sucesso!");
 
-        return new ResponseEntity<>(usuarioDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{idUsuario}")
@@ -53,7 +53,7 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idUsuario}") // localhost:1521/pessoa/10
+    @PutMapping("/{idUsuario}/delete") // localhost:1521/pessoa/10
     public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Deletando a pessoa");
 
