@@ -53,7 +53,7 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/{idUsuario}/delete") // localhost:1521/pessoa/10
+    @DeleteMapping("/{idUsuario}") // localhost:1521/pessoa/10
     public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Deletando a pessoa");
 
