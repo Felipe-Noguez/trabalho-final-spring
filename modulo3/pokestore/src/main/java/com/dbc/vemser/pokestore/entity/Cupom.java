@@ -14,15 +14,10 @@ import javax.validation.constraints.Positive;
 public class Cupom {
 
 
-    @NotNull
-    @Positive
     private Integer idCupom;
 
-    @NotNull
-    @Positive
     private double valor;
 
-    @NotNull
     private String deletado;
 
 

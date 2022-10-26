@@ -4,40 +4,33 @@ import com.dbc.vemser.pokestore.entity.Usuario;
 import com.dbc.vemser.pokestore.enums.Tipos;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 public class ProdutoCreateDTO {
 
-    //    @NotBlank
-//    @Positive
-    private Integer idProduto;
 
-    //    @NotNull
-//    @Size(max = 250)
+    @NotNull
+    @Size(max = 250)
     private String nome;
 
-    //    @NotNull
-//    @Size(max = 250)
+    @NotNull
+    @Size(max = 250)
     private String descricao;
 
-    //    @NotBlank
-//    @Positive
+    @NotNull
+    @Positive
     private int quantidade;
 
-    //    @NotNull
+    @NotNull
     protected Tipos tipo;
 
-    //    @NotBlank
-//    @Positive
+    @NotNull
     private double valor;
 
     private int idUsuario;
 
-    //    @NotBlank
+    @NotBlank
     private String deletado;
 
 }

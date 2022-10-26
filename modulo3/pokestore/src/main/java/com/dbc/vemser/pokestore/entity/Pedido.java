@@ -15,32 +15,25 @@ import java.util.List;
 @ToString
 public class Pedido {
 
-    @NotNull
     private List<ProdutoPedido> produtosPedido = new ArrayList<>(); // ID
 
-    @Positive
     private Cupom cupom; // ID
 
-    @NotNull
-    @Positive
+//    private Integer idCupom;
+
     private Integer idPedido;
 
-    @NotNull
-    @Positive
     private Integer idUsuario;
 
-    @Positive
     private double valorFinal;
 
-    @NotBlank
     private String deletado;
 
     public Pedido() {
         this.setDeletado("F");
-
     }
 
-    public Pedido(List<ProdutoPedido> produtosPedido, Cupom cupom, int idPedido, int idUsuario, double valorFinal) {
+    public Pedido(List<ProdutoPedido> produtosPedido, Cupom cupom, Integer idPedido, Integer idUsuario, double valorFinal) {
         this.produtosPedido = produtosPedido;
         this.cupom = cupom;
         this.idPedido = idPedido;

@@ -9,6 +9,5 @@ import javax.validation.constraints.Positive;
 public class UsuarioDTO extends UsuarioCreateDTO{
 
     @NotNull
-    @Positive
     private Integer idUsuario;
 }

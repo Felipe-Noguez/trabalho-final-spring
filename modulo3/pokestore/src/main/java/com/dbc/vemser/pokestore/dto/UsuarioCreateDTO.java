@@ -9,40 +9,36 @@ import javax.validation.constraints.*;
 @Data
 public class UsuarioCreateDTO {
 
-    //    @NotNull
-//    @Positive
-    private Integer idUsuario;
-
-    //    @Email
+    @Email
     private String email;
 
-    //    @NotNull
+    @NotBlank
     private String senha;
 
-    //    @NotBlank
+    @NotBlank
     private String pix;
 
-    //    @NotNull
+    @NotNull
     private String nome;
 
-    //    @NotBlank
+    @NotNull
     private String endereco;
 
-        @CPF
+    @CPF
     private String cpf;
 
-    //    @NotNull
+    @NotNull
     @Size(max = 250)
     private String cidade;
 
-    //    @NotNull
+    @NotNull
     private String estado;
 
-    //    @NotBlank
+    @NotNull
     @Size(max = 12)
     private String telefone;
 
-    //    @NotBlank
+    @NotNull
     private String deletado;
 
 }

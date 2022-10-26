@@ -48,6 +48,7 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setInt(1, pedido.getIdPedido());
+//            stmt.setInt(2, pedido.getCupom().getIdCupom());
             if (pedido.getCupom() != null) {
                 stmt.setInt(2, pedido.getCupom().getIdCupom());
             } else {
@@ -116,19 +117,20 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
             sql.append("UPDATE PEDIDO SET ");
             sql.append(" ID_CUPOM = ?,");
             sql.append(" ID_USUARIO = ?,");
-            sql.append(" VALOR_FINAL = ?,");
             sql.append(" DELETADO = ?, ");
+            sql.append(" WHERE id_pedido = ? ");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
-            if (pedido.getCupom() != null) {
-                stmt.setInt(1, pedido.getCupom().getIdCupom());
-            } else {
-                stmt.setNull(1, Types.NULL);
-            }
+            stmt.setInt(1, pedido.getCupom().getIdCupom());
+//            if (pedido.getCupom() != null) {
+//                stmt.setInt(1, pedido.getCupom().getIdCupom());
+//            } else {
+//                stmt.setNull(1, Types.NULL);
+//            }
             stmt.setInt(2, pedido.getIdUsuario());
-            stmt.setDouble(3, pedido.getValorFinal());
-            stmt.setString(4, pedido.getDeletado());
+            stmt.setString(3, pedido.getDeletado());
+            stmt.setInt(4,pedido.getIdPedido());
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();

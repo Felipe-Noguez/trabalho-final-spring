@@ -8,8 +8,6 @@ import javax.validation.constraints.Positive;
 @Data
 public class CupomDTO extends CupomCreateDTO{
 
-    @NotNull
-    @Positive
     private Integer idCupom;
 
 }

@@ -118,25 +118,26 @@ public class ProdutoRepository implements Repositorio<Integer, Produto> {
 
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE PRODUTO SET ");
-            sql.append(" NOME = ?,");
-            sql.append(" DESCRICAO = ?,");
-            sql.append(" QUANTIDADE = ? ");
-            sql.append(" TIPO = ? ");
-            sql.append(" VALOR = ? ");
-            sql.append(" ID_USUARIO = ? ");
-            sql.append(" DELETADO = ? ");
-            sql.append(" WHERE ID_PRODUTO = ? ");
+            sql.append(" nome = ?,");
+            sql.append(" descricao = ?,");
+            sql.append(" quantidade = ?, ");
+            sql.append(" tipo = ?, ");
+            sql.append(" valor = ?, ");
+            sql.append(" id_usuario = ?, ");
+            sql.append(" deletado = ? ");
+            sql.append(" where id_produto = ? ");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
-            stmt.setInt(1, produto.getIdProduto());
-            stmt.setString(2,produto.getNome());
-            stmt.setString(3,produto.getDescricao());
-            stmt.setInt(4,produto.getQuantidade());
-            stmt.setString(5,produto.getTipo().getTipos());
-            stmt.setDouble(6,produto.getValor());
-            stmt.setInt(7,produto.getIdUsuario());
-            stmt.setString(8,produto.getDeletado());
+
+            stmt.setString(1,produto.getNome());
+            stmt.setString(2,produto.getDescricao());
+            stmt.setInt(3,produto.getQuantidade());
+            stmt.setString(4,produto.getTipo().getTipos());
+            stmt.setDouble(5,produto.getValor());
+            stmt.setInt(6,produto.getIdUsuario());
+            stmt.setString(7,produto.getDeletado());
+            stmt.setInt(8, produto.getIdProduto());
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();

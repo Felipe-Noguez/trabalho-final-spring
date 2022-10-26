@@ -15,34 +15,20 @@ import javax.validation.constraints.Size;
 @ToString
 public class Produto {
 
-//    @NotBlank
-//    @Positive
     private Integer idProduto;
 
-//    @NotNull
-//    @Size(max = 250)
     private String nome;
 
-//    @NotNull
-//    @Size(max = 250)
     private String descricao;
 
-//    @NotBlank
-//    @Positive
     private int quantidade;
 
-//    @NotNull
     protected Tipos tipo;
 
-//    @NotBlank
-//    @Positive
     private double valor;
 
-//    @NotBlank
-//    @Positive
     private int idUsuario;
 
-//    @NotBlank
     private String deletado;
 
 

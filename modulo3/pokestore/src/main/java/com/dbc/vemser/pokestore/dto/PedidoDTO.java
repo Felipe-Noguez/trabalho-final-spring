@@ -4,15 +4,16 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-public class PedidoDTO extends PedidoCreateDTO {
+public class PedidoDTO {
 
-    @NotNull
-    @Positive
+    private double valorFinal;
+
     private Integer idPedido;
 
-    @NotNull
-    @Positive
-    private Integer idUsuario;
+    private List<ProdutoPedidoDTO> produtosPedido = new ArrayList<>();
+
 }

@@ -12,28 +12,21 @@ import javax.validation.constraints.Positive;
 @ToString
 public class ProdutoPedido {
 
-    @NotBlank
-    @Positive
     private Integer idProdutoPedido;
 
-    @NotBlank
-    @Positive
+
     private Produto produto;
 
-    @NotBlank
-    @Positive
+
     private Pedido pedido;
 
-    @NotBlank
-    @Positive
+
     private Integer quantidade;
 
-    @NotBlank
-    @Positive
+
     private Double valor;
 
-    @NotBlank
-    @Positive
+
     private String deletado;
 
     public ProdutoPedido(){

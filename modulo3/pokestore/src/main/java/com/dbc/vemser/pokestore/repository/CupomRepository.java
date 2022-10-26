@@ -108,15 +108,17 @@ public class CupomRepository implements Repositorio<Integer, Cupom> {
             con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE CUPOM SET ");
-            sql.append(" VALOR = ?,");
-            sql.append(" DELETADO = ?,");
+            sql.append("UPDATE CUPOM SET " );
+            sql.append(" desconto = ?,");
+            sql.append(" deletado = ? ");
+            sql.append(" WHERE id_cupom = ?");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
-            stmt.setInt(1, cupom.getIdCupom());
-            stmt.setDouble(2, cupom.getValor());
-            stmt.setString(3, cupom.getDeletado());
+
+            stmt.setDouble(1, cupom.getValor());
+            stmt.setString(2, cupom.getDeletado());
+            stmt.setInt(3, cupom.getIdCupom());
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();

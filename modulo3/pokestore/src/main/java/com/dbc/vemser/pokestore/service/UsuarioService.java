@@ -2,6 +2,7 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
+import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.*;
 import com.dbc.vemser.pokestore.entity.Usuario;
 import com.dbc.vemser.pokestore.repository.UsuarioRepository;
@@ -15,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+
+    private final EmailService emailService;
 
     private final ObjectMapper objectMapper;
 
@@ -34,14 +37,17 @@ public class UsuarioService {
 //        }
 
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.adicionar(usuarioEntity), UsuarioDTO.class);
-
+        emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
         System.out.println("Usuario adicinado com sucesso! " + usuarioEntity);
 
         return usuarioDTO;
     }
 
     // remoção
-    public void remover(Integer id) throws BancoDeDadosException {
+    public void remover(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
+            Usuario usuarioDeletado = findById(id);
+            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioDeletado, UsuarioDTO.class);
+            emailService.sendEmailUsuario(usuarioDTO, Requisicao.DELETE);
             boolean conseguiuRemover = usuarioRepository.remover(id);
             System.out.println("removido? " + conseguiuRemover + "| com id=" + id);
     }

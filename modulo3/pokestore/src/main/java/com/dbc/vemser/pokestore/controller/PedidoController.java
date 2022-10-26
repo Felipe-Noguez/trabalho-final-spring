@@ -34,6 +34,8 @@ public class PedidoController {
     public ResponseEntity<PedidoDTO> create(@RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Criando novo pedido. . .");
 
+        // idCupom, idCliente, idProduto e quantidadeProduto;
+
         PedidoDTO pedidoDTO = pedidoService.adicionarPedido(pedido);
 
         log.info("Pedido criado com sucesso!");
@@ -52,8 +54,8 @@ public class PedidoController {
         return new ResponseEntity<>(pedidoDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<PedidoDTO> delete(@PathVariable("idPedido") Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+    @DeleteMapping("/{idPedido}")
+    public ResponseEntity<PedidoDTO> delete(@PathVariable("idPedido") Integer id) throws RegraDeNegocioException {
         log.info("Deletando o pedido");
 
         pedidoService.removerPedido(id);

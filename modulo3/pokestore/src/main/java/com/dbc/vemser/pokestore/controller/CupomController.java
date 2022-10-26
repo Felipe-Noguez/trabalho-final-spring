@@ -20,17 +20,16 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cupom")
-
 public class CupomController {
 
     private final CupomService cupomService;
 
-    @GetMapping
+    @GetMapping// localhost:8080/cupom
     public List<CupomDTO> list() throws RegraDeNegocioException, BancoDeDadosException {
         return cupomService.listarCupons();
     }
 
-    @PostMapping
+    @PostMapping// localhost:8080/cupom
     public ResponseEntity<CupomDTO> create(@RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Criando cupom novo....");
 
@@ -40,7 +39,7 @@ public class CupomController {
         return new ResponseEntity<>(cupomDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/{idCupom}")
+    @PutMapping("/{idCupom}")// localhost:8080/cupom/idCupom
     public ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer id,
                                            @RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Atualizando cupom.... ");
@@ -52,7 +51,7 @@ public class CupomController {
         return new ResponseEntity<>(cupomDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{idCupom}") //localhost:8080/cupom/idCupom
     public ResponseEntity<CupomDTO> delete(@PathVariable("idCupom") Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Deletando a pessoa");
 

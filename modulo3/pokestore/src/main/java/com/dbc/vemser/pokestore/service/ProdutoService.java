@@ -41,8 +41,11 @@ public class ProdutoService {
     // atualização de um objeto
     public ProdutoDTO editarProduto(Integer id, ProdutoCreateDTO produto) throws RegraDeNegocioException, BancoDeDadosException {
         Produto produtoRecuperado = findById(id);
+        System.out.println("aeae");
         produtoRepository.editar(id, produtoRecuperado);
+
         boolean conseguiuEditar = produtoRepository.editar(id, produtoRecuperado);
+        System.out.println("adad");
         System.out.println("Produto editado? " + conseguiuEditar + "| com id=" + id);
         ProdutoDTO produtoDTO = objectMapper.convertValue(produtoRecuperado, ProdutoDTO.class);
         return produtoDTO;
