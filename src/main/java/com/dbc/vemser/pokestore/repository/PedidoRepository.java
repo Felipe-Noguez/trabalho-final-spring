@@ -108,8 +108,14 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
 
     @Override
     public boolean editar(Integer id, Pedido pedido) throws BancoDeDadosException {
+        return false;
+    }
+
+    public Pedido editarPedido(Integer id, Pedido pedido) throws BancoDeDadosException {
         Connection con = null;
+
         try {
+
             con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
@@ -134,7 +140,7 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
             // Executa-se a consulta
             int res = stmt.executeUpdate();
             System.out.println("editarPedido.res=" + res);
-            return res > 0;
+            return pedido;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -248,30 +254,31 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
     }
 
     public Pedido findById(Integer id) throws BancoDeDadosException{
-        List<Pedido> lista = new ArrayList<>();
+
         Connection con = null;
-        boolean existe = false;
+        Pedido pedido = new Pedido();
+
         try {
+
             con = conexaoBancoDeDados.getConnection();
-            Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM PEDIDO" +
                     " WHERE ID_PEDIDO = ?";
 
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
             // Executa-se a consulta
 
-            ResultSet res = stmt.executeQuery(sql);
+            ResultSet res = stmt.executeQuery();
 
             res.next();
-
-            Pedido pedido1 = new Pedido();
-            pedido1.setIdPedido(res.getInt("id_pedido"));
-            pedido1.setIdCupom(res.getInt("id_cupom"));
-            pedido1.setIdUsuario(res.getInt("usuario"));
-            pedido1.setValorFinal(res.getDouble("valor_final"));
-            pedido1.setDeletado(res.getString("deletado"));
-
-            return pedido1;
+            pedido.setIdPedido(res.getInt("id_pedido"));
+            pedido.setIdCupom(res.getInt("id_cupom"));
+            pedido.setIdUsuario(res.getInt("usuario"));
+            pedido.setValorFinal(res.getDouble("valor_final"));
+            pedido.setDeletado(res.getString("deletado"));
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -283,6 +290,6 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        } return pedido;
     }
 }

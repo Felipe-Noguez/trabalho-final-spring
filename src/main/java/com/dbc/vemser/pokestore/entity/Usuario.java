@@ -3,10 +3,6 @@ package com.dbc.vemser.pokestore.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.hibernate.validator.constraints.br.CPF;
-
-import javax.validation.constraints.*;
 
 @Getter
 @Setter
@@ -27,15 +23,12 @@ public class Usuario {
 
     private String cpf;
 
-    @Size(max = 250)
     private String cidade;
 
     private String estado;
 
-    @Size(max = 12)
     private String telefone;
 
-    @NotNull
     private String deletado;
 
     public Usuario(){

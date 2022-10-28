@@ -120,9 +120,6 @@ public class CupomRepository implements Repositorio<Integer, Cupom> {
             sql.append(" WHERE id_cupom = ?");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
-            System.out.println(cupom.getValor());
-            System.out.println(cupom.getDeletado());
-            System.out.println(cupom.getIdCupom());
 
             stmt.setDouble(1, cupom.getValor());
             stmt.setString(2, cupom.getDeletado());
@@ -204,7 +201,6 @@ public class CupomRepository implements Repositorio<Integer, Cupom> {
 
             ResultSet res = stmt.executeQuery();
 
-            System.out.println("gdsagsagsagsadgasd");
             res.next();
             cupom.setIdCupom(res.getInt("id_cupom"));
             cupom.setValor(res.getDouble("desconto"));

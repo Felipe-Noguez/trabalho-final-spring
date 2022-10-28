@@ -41,17 +41,16 @@ public class ProdutoService {
 
     // atualização de um objeto
     public ProdutoDTO editarProduto(Integer id, ProdutoCreateDTO produto) throws RegraDeNegocioException, BancoDeDadosException {
-        ProdutoDTO produtoRecuperado = findById(id);
+        if(produtoRepository.findById(id) == null){
+            throw new RegraDeNegocioException("Cupom não encontrado!");
+        }
 
-        Produto produtoEntity = objectMapper.convertValue(produtoRecuperado, Produto.class);
+        Produto produtoEntity = objectMapper.convertValue(produto, Produto.class);
 
-        produtoRepository.editar(id, produtoEntity);
+        Produto editado = produtoRepository.editarProduto(id, produtoEntity);
 
-        boolean conseguiuEditar = produtoRepository.editar(id, produtoEntity);
-
-        System.out.println("Produto editado? " + conseguiuEditar + "| com id=" + id);
-        ProdutoDTO produtoDTO = objectMapper.convertValue(produtoEntity, ProdutoDTO.class);
-        return produtoDTO;
+        log.info("Cupom editado!");
+        return objectMapper.convertValue(editado, ProdutoDTO.class);
     }
 
     // leitura
@@ -67,6 +66,7 @@ public class ProdutoService {
             throw new RegraDeNegocioException("Usuário não encontrado");
         }
         log.info("Usuário encontrado!!");
-        return objectMapper.convertValue(produto, ProdutoDTO.class);
+        ProdutoDTO produtoDTO = objectMapper.convertValue(produto, ProdutoDTO.class);
+        return produtoDTO;
     }
 }

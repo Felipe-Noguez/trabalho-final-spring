@@ -50,15 +50,21 @@ public class UsuarioService {
 
     // atualização de um objeto
     public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException, BancoDeDadosException{
-        Usuario usuarioAdicionado = objectMapper.convertValue(usuario, Usuario.class);
-        usuarioAdicionado = usuarioRepository.adicionar(usuarioAdicionado);
+        System.out.println("Teste 1");
+        if(usuarioRepository.findById(id) == null){
+            throw new RegraDeNegocioException("Usuario não encontrado!");
+        }
 
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioAdicionado, UsuarioDTO.class);
+        System.out.println("Teste 2");
 
-        log.info("UsuarioEditado!");
+        Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
 
-        return usuarioDTO;
+        Usuario editado = usuarioRepository.editarUsuario(id, usuarioEntity);
 
+        System.out.println("Teste 3");
+
+        log.info("Usuario editado!");
+        return objectMapper.convertValue(editado, UsuarioDTO.class);
     }
 
     // leitura
@@ -78,12 +84,14 @@ public class UsuarioService {
         return null;
         }
 
-    public Usuario findById(Integer id) throws RegraDeNegocioException {
-        try {
-            return usuarioRepository.findById(id);
-        } catch (RegraDeNegocioException e) {
-            throw new RegraDeNegocioException("Usuário não encontrado!");
+    public UsuarioDTO findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        Usuario usuario = usuarioRepository.findById(id);
+        if(usuario == null){
+            throw new RegraDeNegocioException("Usuario não encontrado!");
         }
+        log.info("Usuario encontrado!");
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuario, UsuarioDTO.class);
+        return usuarioDTO;
     }
 }
 //    public static Usuario fazerLogin(UsuarioService usuarioService, Scanner entrada) {

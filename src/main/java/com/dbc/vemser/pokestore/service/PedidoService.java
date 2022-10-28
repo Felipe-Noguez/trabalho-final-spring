@@ -119,13 +119,16 @@ public class PedidoService {
     // atualização de um objeto
     public PedidoDTO editarPedido(Integer id, PedidoCreateDTO pedido) throws BancoDeDadosException, RegraDeNegocioException{
 
-        PedidoDTO pedidoRecuperado = findById(id);
-        Pedido pedidoEntity = objectMapper.convertValue(pedidoRecuperado, Pedido.class);
-        pedidoRepository.editar(id, pedidoEntity);
-        boolean conseguiuEditar = pedidoRepository.editar(id, pedidoEntity);
-        System.out.println("Pedido editado? " + conseguiuEditar + "| com id=" + id);
-        PedidoDTO pedidoDTO = objectMapper.convertValue(pedidoEntity, PedidoDTO.class);
-        return pedidoDTO;
+        if(pedidoRepository.findById(id) == null){
+            throw new RegraDeNegocioException("Pedido não encontrado!");
+        }
+
+        Pedido pedidoEntity = objectMapper.convertValue(pedido, Pedido.class);
+
+        Pedido editado = pedidoRepository.editarPedido(id, pedidoEntity);
+
+        log.info("Cupom editado!");
+        return objectMapper.convertValue(editado, PedidoDTO.class);
     }
 
     // leitura
@@ -141,7 +144,8 @@ public class PedidoService {
             throw new RegraDeNegocioException("Pedido não encontrado");
         }
         log.info("Pedido encontrado!!");
-        return objectMapper.convertValue(pedido, PedidoDTO.class);
+        PedidoDTO pedidoDTO = objectMapper.convertValue(pedido, PedidoDTO.class);
+        return pedidoDTO;
     }
 
 }
