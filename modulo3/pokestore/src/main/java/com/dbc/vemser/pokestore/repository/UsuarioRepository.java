@@ -1,8 +1,9 @@
 package com.dbc.vemser.pokestore.repository;
 
 import com.dbc.vemser.pokestore.config.ConexaoBancoDeDados;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.entity.Usuario;
+import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
+import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -113,12 +114,14 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
         return false;
     }
 
-    public Usuario editarUsuario(Integer id, Usuario usuario) throws BancoDeDadosException {
+    public boolean editarUsuario(Integer id, Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
-        try {
-            con = conexaoBancoDeDados.getConnection();
 
+        try {
+
+            con = conexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
+
             sql.append("UPDATE USUARIO SET ");
             sql.append(" pix = ?,");
             sql.append(" email = ?,");
@@ -129,8 +132,8 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
             sql.append(" cidade = ?,");
             sql.append(" estado = ?,");
             sql.append(" telefone = ?,");
-            sql.append(" deletado = ? ");
-            sql.append(" WHERE id_usuario = ?");
+            sql.append(" deletado = ?");
+            sql.append(" WHERE id_usuario = ? ");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
@@ -144,13 +147,14 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
             stmt.setString(8, usuario.getEstado());
             stmt.setString(9, usuario.getTelefone());
             stmt.setString(10, usuario.getDeletado());
+
             stmt.setInt(11, id);
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
             System.out.println("editarUsuario.res=" + res);
 
-            return usuario;
+            return res > 0;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -236,39 +240,39 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
         return existe;
     }
 
-    public Usuario findById(Integer id) throws BancoDeDadosException{
-        List<Usuario> lista = new ArrayList<>();
+    public Usuario findById(Integer id) throws RegraDeNegocioException {
         Connection con = null;
+        Usuario usuario = new Usuario();
         try {
+
             con = conexaoBancoDeDados.getConnection();
-            Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM USUARIO" +
                     " WHERE ID_USUARIO = ?";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setInt(1, id);
 
             // Executa-se a consulta
 
             ResultSet res = stmt.executeQuery(sql);
 
             res.next();
+            usuario.setIdUsuario(res.getInt("id_usuario"));
+            usuario.setPix(res.getString("pix"));
+            usuario.setEmail(res.getString("email"));
+            usuario.setSenha(res.getString("senha"));
+            usuario.setNome(res.getString("nome"));
+            usuario.setEndereco(res.getString("endereco"));
+            usuario.setCpf(res.getString("cpf"));
+            usuario.setCidade(res.getString("cidade"));
+            usuario.setEstado(res.getString("estado"));
+            usuario.setTelefone(res.getString("telefone"));
+            usuario.setDeletado(res.getString("deletado"));
 
-            Usuario usuario1 = new Usuario();
-            usuario1.setIdUsuario(res.getInt("id_usuario"));
-            usuario1.setPix(res.getString("pix"));
-            usuario1.setEmail(res.getString("email"));
-            usuario1.setSenha(res.getString("senha"));
-            usuario1.setNome(res.getString("nome"));
-            usuario1.setEndereco(res.getString("endereco"));
-            usuario1.setCpf(res.getString("cpf"));
-            usuario1.setCidade(res.getString("cidade"));
-            usuario1.setEstado(res.getString("estado"));
-            usuario1.setTelefone(res.getString("telefone"));
-            usuario1.setDeletado(res.getString("deletado"));
-
-            return usuario1;
 
         } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
+            throw new RegraDeNegocioException(e.getCause());
         } finally {
             try {
                 if (con != null) {
@@ -278,6 +282,7 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
                 e.printStackTrace();
             }
         }
+        return usuario;
     }
 
     public boolean findBySenha(Usuario usuario) throws BancoDeDadosException{

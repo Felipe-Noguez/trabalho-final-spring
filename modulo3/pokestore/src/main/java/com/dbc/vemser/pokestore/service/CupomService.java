@@ -57,7 +57,7 @@ public class CupomService {
                     .map(cupom -> objectMapper.convertValue(cupom, CupomDTO.class))
                     .toList();
 }
-    public CupomDTO findById(int id) throws RegraDeNegocioException, BancoDeDadosException {
+    public CupomDTO findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         Cupom cupom = cupomRepository.findById(id);
         if(cupom == null){
             throw new RegraDeNegocioException("Cupom não encontrado");
