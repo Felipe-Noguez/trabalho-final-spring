@@ -69,15 +69,17 @@ public class UsuarioController {
             }
     )
     @PutMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id,
+    public void update(@PathVariable("idUsuario") Integer id,
                                              @RequestBody @Valid UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException, BancoDeDadosException{
         log.info("Atualizando usuário....");
 
-        UsuarioDTO usuarioDTO = usuarioService.editar(id,usuarioAtualizar);
+
+        usuarioService.editar(id,usuarioAtualizar);
 
         log.info("Usuário atualizado com sucesso!");
 
-        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+        new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Operation(summary = "deletar usuario selecionado por id", description = "Deleta usuario selecionado")

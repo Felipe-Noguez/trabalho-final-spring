@@ -49,16 +49,18 @@ public class UsuarioService {
     }
 
     // atualização de um objeto
-    public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException, BancoDeDadosException{
+    public void editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException, BancoDeDadosException{
         if(usuarioRepository.findById(id) == null){
             throw new RegraDeNegocioException("Usuario não encontrado!");
         }
-        Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
+//        Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
+//
+//        Usuario editado = usuarioRepository.editarUsuario(id, usuarioEntity);
 
-        Usuario editado = usuarioRepository.editarUsuario(id, usuarioEntity);
+        usuarioRepository.editarUsuario(id, objectMapper.convertValue(usuario, Usuario.class));
 
         log.info("Cupom editado!");
-        return objectMapper.convertValue(editado, UsuarioDTO.class);
+//        return objectMapper.convertValue(editado, UsuarioDTO.class);
     }
 
     // leitura
