@@ -2,9 +2,10 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
-import com.dbc.vemser.pokestore.enums.Requisicao;
-import com.dbc.vemser.pokestore.exceptions.*;
 import com.dbc.vemser.pokestore.entity.Usuario;
+import com.dbc.vemser.pokestore.enums.Requisicao;
+import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
+import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -49,13 +50,15 @@ public class UsuarioService {
 
     // atualização de um objeto
     public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException, BancoDeDadosException{
-        UsuarioDTO usuarioDTO = findById(id);
-        Usuario usuarioEntity = objectMapper.convertValue(usuarioDTO, Usuario.class);
-        usuarioRepository.editar(id,usuarioEntity);
-        boolean conseguiuEditar = usuarioRepository.editar(id,usuarioEntity);
-        System.out.println("editado? " + conseguiuEditar + "| com id=" + id);
-        UsuarioDTO usuarioDTOenviar = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        return usuarioDTOenviar;
+        if(usuarioRepository.findById(id) == null){
+            throw new RegraDeNegocioException("Usuario não encontrado!");
+        }
+        Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
+
+        Usuario editado = usuarioRepository.editarUsuario(id, usuarioEntity);
+
+        log.info("Cupom editado!");
+        return objectMapper.convertValue(editado, UsuarioDTO.class);
     }
 
     // leitura

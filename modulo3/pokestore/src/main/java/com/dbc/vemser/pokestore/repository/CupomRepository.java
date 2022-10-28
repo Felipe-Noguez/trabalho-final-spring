@@ -103,28 +103,37 @@ public class CupomRepository implements Repositorio<Integer, Cupom> {
 
     @Override
     public boolean editar(Integer id, Cupom cupom) throws BancoDeDadosException {
+        return false;
+    }
+
+    public Cupom editarCupom(Integer id, Cupom cupom) throws BancoDeDadosException {
+
         Connection con = null;
+
         try {
             con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE CUPOM SET " );
+            sql.append("UPDATE CUPOM SET");
             sql.append(" desconto = ?,");
-            sql.append(" deletado = ? ");
+            sql.append(" deletado = ?");
             sql.append(" WHERE id_cupom = ?");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
-
+            System.out.println(cupom.getValor());
+            System.out.println(cupom.getDeletado());
+            System.out.println(cupom.getIdCupom());
 
             stmt.setDouble(1, cupom.getValor());
             stmt.setString(2, cupom.getDeletado());
-            stmt.setInt(3, cupom.getIdCupom());
+            stmt.setInt(3, id);
+
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
             System.out.println("editarCupom.res=" + res);
 
-            return res > 0;
+            return cupom;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -180,10 +189,12 @@ public class CupomRepository implements Repositorio<Integer, Cupom> {
         Cupom cupom = new Cupom();
         try {
 
+            System.out.println("dsfaasd");
+
             con = conexaoBancoDeDados.getConnection();
 
-            String sql = "SELECT * FROM CUPOM " +
-                    " WHERE ID_CUPOM = ?";
+            String sql = "SELECT * FROM CUPOM WHERE ID_CUPOM = ?";
+
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -191,14 +202,15 @@ public class CupomRepository implements Repositorio<Integer, Cupom> {
 
             // Executa-se a consulta
 
-            ResultSet res = stmt.executeQuery(sql);
+            ResultSet res = stmt.executeQuery();
+
+            System.out.println("gdsagsagsagsadgasd");
+            res.next();
+            cupom.setIdCupom(res.getInt("id_cupom"));
+            cupom.setValor(res.getDouble("desconto"));
+            cupom.setDeletado(res.getString("deletado"));
 
 
-            if (res.next()) {
-                cupom.setIdCupom(res.getInt("id_cupom"));
-                cupom.setValor(res.getDouble("desconto"));
-                cupom.setDeletado(res.getString("deletado"));
-           }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {

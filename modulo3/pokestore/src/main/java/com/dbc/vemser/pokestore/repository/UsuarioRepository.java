@@ -110,6 +110,10 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
 
     @Override
     public boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {
+        return false;
+    }
+
+    public Usuario editarUsuario(Integer id, Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -140,13 +144,13 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
             stmt.setString(8, usuario.getEstado());
             stmt.setString(9, usuario.getTelefone());
             stmt.setString(10, usuario.getDeletado());
-            stmt.setInt(11, usuario.getIdUsuario());
+            stmt.setInt(11, id);
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
             System.out.println("editarUsuario.res=" + res);
 
-            return res > 0;
+            return usuario;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {

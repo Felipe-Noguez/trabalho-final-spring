@@ -137,7 +137,7 @@ public class ProdutoRepository implements Repositorio<Integer, Produto> {
             stmt.setDouble(5,produto.getValor());
             stmt.setInt(6,produto.getIdUsuario());
             stmt.setString(7,produto.getDeletado());
-            stmt.setInt(8, produto.getIdProduto());
+            stmt.setInt(8, id);
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();

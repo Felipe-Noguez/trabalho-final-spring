@@ -37,7 +37,7 @@ public class CupomService {
     }
 
     // atualização de um objeto
-    public boolean editarCupom(Integer id, CupomCreateDTO cupom) throws BancoDeDadosException, RegraDeNegocioException {
+    public CupomDTO editarCupom(Integer id, CupomCreateDTO cupom) throws BancoDeDadosException, RegraDeNegocioException {
 
         if(cupomRepository.findById(id) == null){
             throw new RegraDeNegocioException("Cupom não encontrado!");
@@ -45,9 +45,10 @@ public class CupomService {
 
         Cupom cupomEntity = objectMapper.convertValue(cupom, Cupom.class);
 
-        boolean editado = cupomRepository.editar(id, cupomEntity);
+        Cupom editado = cupomRepository.editarCupom(id, cupomEntity);
+
         log.info("Cupom editado!");
-        return editado;
+        return objectMapper.convertValue(editado, CupomDTO.class);
     }
 
     // leitura
