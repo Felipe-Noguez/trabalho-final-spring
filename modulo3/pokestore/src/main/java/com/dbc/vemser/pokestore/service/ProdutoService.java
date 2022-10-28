@@ -2,17 +2,18 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.ProdutoCreateDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoDTO;
-import com.dbc.vemser.pokestore.entity.Usuario;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.entity.Produto;
+import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.ProdutoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
@@ -40,14 +41,16 @@ public class ProdutoService {
 
     // atualização de um objeto
     public ProdutoDTO editarProduto(Integer id, ProdutoCreateDTO produto) throws RegraDeNegocioException, BancoDeDadosException {
-        Produto produtoRecuperado = findById(id);
-        System.out.println("aeae");
-        produtoRepository.editar(id, produtoRecuperado);
+        ProdutoDTO produtoRecuperado = findById(id);
 
-        boolean conseguiuEditar = produtoRepository.editar(id, produtoRecuperado);
-        System.out.println("adad");
+        Produto produtoEntity = objectMapper.convertValue(produtoRecuperado, Produto.class);
+
+        produtoRepository.editar(id, produtoEntity);
+
+        boolean conseguiuEditar = produtoRepository.editar(id, produtoEntity);
+
         System.out.println("Produto editado? " + conseguiuEditar + "| com id=" + id);
-        ProdutoDTO produtoDTO = objectMapper.convertValue(produtoRecuperado, ProdutoDTO.class);
+        ProdutoDTO produtoDTO = objectMapper.convertValue(produtoEntity, ProdutoDTO.class);
         return produtoDTO;
     }
 
@@ -58,11 +61,12 @@ public class ProdutoService {
                 .toList();
     }
 
-    public Produto findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-        Produto produtoRecuperado = produtoRepository.listar().stream()
-                .filter(usuario -> usuario.getIdProduto().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado"));
-        return produtoRecuperado;
+    public ProdutoDTO findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        Produto produto = produtoRepository.findById(id);
+        if(produto == null){
+            throw new RegraDeNegocioException("Usuário não encontrado");
+        }
+        log.info("Usuário encontrado!!");
+        return objectMapper.convertValue(produto, ProdutoDTO.class);
     }
 }

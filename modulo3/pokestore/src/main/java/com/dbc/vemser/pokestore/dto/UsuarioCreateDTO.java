@@ -2,10 +2,11 @@ package com.dbc.vemser.pokestore.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.hibernate.validator.constraints.br.CPF;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 public class UsuarioCreateDTO {
@@ -14,11 +15,11 @@ public class UsuarioCreateDTO {
     @Schema(description = "Email do usuario")
     private String email;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Senha do usuario")
     private String senha;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Pix do usuario")
     private String pix;
 

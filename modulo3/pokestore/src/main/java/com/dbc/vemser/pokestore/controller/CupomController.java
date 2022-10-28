@@ -67,15 +67,16 @@ public class CupomController {
             }
     )
     @PutMapping("/{idCupom}")// localhost:8080/cupom/idCupom
-    public ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer id,
-                                           @RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException {
+    public ResponseEntity<Boolean> update(@PathVariable("idCupom") Integer id,
+                                    @RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException {
+
         log.info("Atualizando cupom.... ");
 
-        CupomDTO cupomDTO = cupomService.editarCupom(id, cupom);
+        boolean cupomDTO = cupomService.editarCupom(id, cupom);
 
         log.info("Cupom editado com sucesso! ");
 
-        return new ResponseEntity<>(cupomDTO, HttpStatus.OK);
+        return ResponseEntity.ok().body(cupomDTO);
     }
 
     @Operation(summary = "deletar um cupom selecionado por id", description = "Deleta um cupom do banco")

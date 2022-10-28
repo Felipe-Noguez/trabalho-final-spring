@@ -42,7 +42,7 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
             usuario.setIdUsuario(proximoId);
 
             String sql = "INSERT INTO USUARIO\n" +
-                    "(ID_USUARIO,PIX,EMAIL,SENHA ,NOME,ENDERECO,CPF,CIDADE,ESTADO,TELEFONE, DELETADO)\n" +
+                    "(ID_USUARIO, PIX,EMAIL,SENHA ,NOME,ENDERECO,CPF,CIDADE,ESTADO,TELEFONE,DELETADO)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -60,6 +60,7 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
             stmt.setString(11, usuario.getDeletado());
 
             int res = stmt.executeUpdate();
+
             System.out.println("adicionarUsuario.res=" + res);
             return usuario;
         } catch (SQLException e) {
@@ -212,7 +213,7 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM USUARIO" +
-                    " WHERE EMAIL = ?";
+                    " WHERE EMAIL = ? ";
             // Executa-se a consulta
             ResultSet res = stmt.executeQuery(sql);
             res.next();
@@ -229,6 +230,50 @@ public class UsuarioRepository implements Repositorio<Integer, Usuario> {
             }
         }
         return existe;
+    }
+
+    public Usuario findById(Integer id) throws BancoDeDadosException{
+        List<Usuario> lista = new ArrayList<>();
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            Statement stmt = con.createStatement();
+
+            String sql = "SELECT * FROM USUARIO" +
+                    " WHERE ID_USUARIO = ?";
+
+            // Executa-se a consulta
+
+            ResultSet res = stmt.executeQuery(sql);
+
+            res.next();
+
+            Usuario usuario1 = new Usuario();
+            usuario1.setIdUsuario(res.getInt("id_usuario"));
+            usuario1.setPix(res.getString("pix"));
+            usuario1.setEmail(res.getString("email"));
+            usuario1.setSenha(res.getString("senha"));
+            usuario1.setNome(res.getString("nome"));
+            usuario1.setEndereco(res.getString("endereco"));
+            usuario1.setCpf(res.getString("cpf"));
+            usuario1.setCidade(res.getString("cidade"));
+            usuario1.setEstado(res.getString("estado"));
+            usuario1.setTelefone(res.getString("telefone"));
+            usuario1.setDeletado(res.getString("deletado"));
+
+            return usuario1;
+
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean findBySenha(Usuario usuario) throws BancoDeDadosException{

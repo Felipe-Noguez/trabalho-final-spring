@@ -1,8 +1,8 @@
 package com.dbc.vemser.pokestore.repository;
 
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
-import com.dbc.vemser.pokestore.entity.Cupom;
 import com.dbc.vemser.pokestore.config.ConexaoBancoDeDados;
+import com.dbc.vemser.pokestore.entity.Cupom;
+import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -173,6 +173,44 @@ public class CupomRepository implements Repositorio<Integer, Cupom> {
             }
         }
         return cupons;
+    }
+
+    public Cupom findById(Integer id) throws BancoDeDadosException {
+        Connection con = null;
+        Cupom cupom = new Cupom();
+        try {
+
+            con = conexaoBancoDeDados.getConnection();
+
+            String sql = "SELECT * FROM CUPOM " +
+                    " WHERE ID_CUPOM = ?";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
+            // Executa-se a consulta
+
+            ResultSet res = stmt.executeQuery(sql);
+
+
+            if (res.next()) {
+                cupom.setIdCupom(res.getInt("id_cupom"));
+                cupom.setValor(res.getDouble("desconto"));
+                cupom.setDeletado(res.getString("deletado"));
+           }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return cupom;
     }
 
 }

@@ -1,9 +1,9 @@
 package com.dbc.vemser.pokestore.repository;
 
 import com.dbc.vemser.pokestore.config.ConexaoBancoDeDados;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.entity.Cupom;
 import com.dbc.vemser.pokestore.entity.Pedido;
+import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -48,7 +48,6 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setInt(1, pedido.getIdPedido());
-//            stmt.setInt(2, pedido.getCupom().getIdCupom());
             if (pedido.getCupom() != null) {
                 stmt.setInt(2, pedido.getCupom().getIdCupom());
             } else {
@@ -149,6 +148,38 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
         }
     }
 
+    public boolean editarValorFinal(Integer id, double valorFinal) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE PEDIDO SET ");
+            sql.append(" valor_final = ?");
+            sql.append(" WHERE id_pedido = ? ");
+
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+            stmt.setDouble(1, valorFinal);
+            stmt.setInt(2, id);
+
+            // Executa-se a consulta
+            int res = stmt.executeUpdate();
+            System.out.println("editarValorFinal.res=" + res);
+            return res > 0;
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public List<Pedido> listar() throws BancoDeDadosException {
         List<Pedido> pedidos = new ArrayList<>();
@@ -214,5 +245,44 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
             }
         }
         return pedido;
+    }
+
+    public Pedido findById(Integer id) throws BancoDeDadosException{
+        List<Pedido> lista = new ArrayList<>();
+        Connection con = null;
+        boolean existe = false;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            Statement stmt = con.createStatement();
+
+            String sql = "SELECT * FROM PEDIDO" +
+                    " WHERE ID_PEDIDO = ?";
+
+            // Executa-se a consulta
+
+            ResultSet res = stmt.executeQuery(sql);
+
+            res.next();
+
+            Pedido pedido1 = new Pedido();
+            pedido1.setIdPedido(res.getInt("id_pedido"));
+            pedido1.setIdCupom(res.getInt("id_cupom"));
+            pedido1.setIdUsuario(res.getInt("usuario"));
+            pedido1.setValorFinal(res.getDouble("valor_final"));
+            pedido1.setDeletado(res.getString("deletado"));
+
+            return pedido1;
+
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

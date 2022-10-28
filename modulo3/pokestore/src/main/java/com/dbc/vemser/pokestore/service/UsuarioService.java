@@ -8,10 +8,12 @@ import com.dbc.vemser.pokestore.entity.Usuario;
 import com.dbc.vemser.pokestore.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
@@ -26,40 +28,34 @@ public class UsuarioService {
 
         Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
 
-//        if (usuarioEntity.getCpf().length() != 11) {
-//                throw new RegraDeNegocioException("CPF Inválido!");
-//        } else if (usuarioEntity.getEmail() != null && usuarioRepository.findByEmail(usuarioEntity)) {
-//                throw new RegraDeNegocioException("Email já cadastrado!");
-//        } else if (usuarioEntity.getCpf() != null && usuarioRepository.findByCPF(usuarioEntity)) {
-//                throw new RegraDeNegocioException("CPF já cadastrado!");
-//        } else if (usuarioEntity.getPix() != null && usuarioRepository.findByPix(usuarioEntity)) {
-//                throw new RegraDeNegocioException("PIX já cadastrado!");
-//        }
+        Usuario usuarioSalvar = usuarioRepository.adicionar(usuarioEntity);
 
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.adicionar(usuarioEntity), UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioSalvar, UsuarioDTO.class);
+
         emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
-        System.out.println("Usuario adicinado com sucesso! " + usuarioEntity);
+
+        System.out.println("Usuario adicionado com sucesso! " + usuarioEntity);
 
         return usuarioDTO;
     }
 
     // remoção
     public void remover(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
-            Usuario usuarioDeletado = findById(id);
-            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioDeletado, UsuarioDTO.class);
-            emailService.sendEmailUsuario(usuarioDTO, Requisicao.DELETE);
+            UsuarioDTO usuarioDeletadoDTO = findById(id);
+            emailService.sendEmailUsuario(usuarioDeletadoDTO, Requisicao.DELETE);
             boolean conseguiuRemover = usuarioRepository.remover(id);
             System.out.println("removido? " + conseguiuRemover + "| com id=" + id);
     }
 
     // atualização de um objeto
     public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException, BancoDeDadosException{
-        Usuario usuarioRecuperado = findById(id);
-        usuarioRepository.editar(id,usuarioRecuperado);
-        boolean conseguiuEditar = usuarioRepository.editar(id,usuarioRecuperado);
+        UsuarioDTO usuarioDTO = findById(id);
+        Usuario usuarioEntity = objectMapper.convertValue(usuarioDTO, Usuario.class);
+        usuarioRepository.editar(id,usuarioEntity);
+        boolean conseguiuEditar = usuarioRepository.editar(id,usuarioEntity);
         System.out.println("editado? " + conseguiuEditar + "| com id=" + id);
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRecuperado, UsuarioDTO.class);
-        return usuarioDTO;
+        UsuarioDTO usuarioDTOenviar = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        return usuarioDTOenviar;
     }
 
     // leitura
@@ -79,12 +75,13 @@ public class UsuarioService {
         return null;
         }
 
-    public Usuario findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-        Usuario usuarioRecuperado = usuarioRepository.listar().stream()
-                .filter(usuario -> usuario.getIdUsuario().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado"));
-        return usuarioRecuperado;
+    public UsuarioDTO findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        Usuario usuario = usuarioRepository.findById(id);
+        if(usuario == null){
+            throw new RegraDeNegocioException("Usuário não encontrado");
+        }
+        log.info("Usuário encontrado!!");
+        return objectMapper.convertValue(usuario, UsuarioDTO.class);
     }
 
 //    public static Usuario fazerLogin(UsuarioService usuarioService, Scanner entrada) {

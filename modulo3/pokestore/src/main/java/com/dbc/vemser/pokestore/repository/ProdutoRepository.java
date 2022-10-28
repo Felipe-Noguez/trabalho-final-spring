@@ -1,9 +1,9 @@
 package com.dbc.vemser.pokestore.repository;
 
 import com.dbc.vemser.pokestore.config.ConexaoBancoDeDados;
+import com.dbc.vemser.pokestore.entity.Produto;
 import com.dbc.vemser.pokestore.enums.Tipos;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
-import com.dbc.vemser.pokestore.entity.Produto;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -202,5 +202,53 @@ public class ProdutoRepository implements Repositorio<Integer, Produto> {
             }
         }
         return produtos;
+    }
+
+    public Produto findById(Integer id) throws BancoDeDadosException{
+        List<Produto> lista = new ArrayList<>();
+        Connection con = null;
+        boolean existe = false;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            Statement stmt = con.createStatement();
+
+            String sql = "SELECT * FROM PRODUTO" +
+                    " WHERE ID_PRODUTO = ?";
+
+            // Executa-se a consulta
+
+            ResultSet res = stmt.executeQuery(sql);
+
+            res.next();
+
+            Produto produto1 = new Produto();
+            produto1.setIdProduto(res.getInt("id_produto"));
+            produto1.setNome(res.getString("nome"));
+            produto1.setDescricao(res.getString("descricao"));
+            produto1.setQuantidade(res.getInt("quantidade"));
+            if(res.getString("TIPO").equalsIgnoreCase("0")){
+                produto1.setTipo(Tipos.JOGOS);
+            } else if (res.getString("TIPO").equalsIgnoreCase("1")){
+                produto1.setTipo(Tipos.CONSOLE);
+            } else {
+                produto1.setTipo(Tipos.COLECIONAVEL);
+            }
+            produto1.setValor(res.getInt("valor"));
+            produto1.setIdUsuario(res.getInt("id_usuario"));
+            produto1.setDeletado(res.getString("deletado"));
+
+            return produto1;
+
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

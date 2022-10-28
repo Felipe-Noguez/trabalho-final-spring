@@ -1,18 +1,20 @@
 package com.dbc.vemser.pokestore.service;
 
+
 import com.dbc.vemser.pokestore.dto.CupomCreateDTO;
 import com.dbc.vemser.pokestore.dto.CupomDTO;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.entity.Cupom;
+import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.CupomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CupomService {
@@ -35,15 +37,17 @@ public class CupomService {
     }
 
     // atualização de um objeto
-    public CupomDTO editarCupom(Integer id, CupomCreateDTO cupom) throws BancoDeDadosException, RegraDeNegocioException {
-            Cupom cupomRecuperado = findById(id);
-            System.out.println("n achou?");
-            cupomRepository.editar(id, cupomRecuperado);
-            System.out.println("achou?");
-            boolean conseguiuEditar = cupomRepository.editar(id, cupomRecuperado);
-            System.out.println("Cupom editado? " + conseguiuEditar + "| com id=" + id);
-            CupomDTO cupomDTO = objectMapper.convertValue(cupomRecuperado, CupomDTO.class);
-            return cupomDTO;
+    public boolean editarCupom(Integer id, CupomCreateDTO cupom) throws BancoDeDadosException, RegraDeNegocioException {
+
+        if(cupomRepository.findById(id) == null){
+            throw new RegraDeNegocioException("Cupom não encontrado!");
+        }
+
+        Cupom cupomEntity = objectMapper.convertValue(cupom, Cupom.class);
+
+        boolean editado = cupomRepository.editar(id, cupomEntity);
+        log.info("Cupom editado!");
+        return editado;
     }
 
     // leitura
@@ -52,12 +56,14 @@ public class CupomService {
                     .map(cupom -> objectMapper.convertValue(cupom, CupomDTO.class))
                     .toList();
 }
-    public Cupom findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-        Cupom cupomRecuperado = cupomRepository.listar().stream()
-                .filter(cupom -> cupom.getIdCupom().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Cupom não encontrado"));
-        return cupomRecuperado;
+    public CupomDTO findById(int id) throws RegraDeNegocioException, BancoDeDadosException {
+        Cupom cupom = cupomRepository.findById(id);
+        if(cupom == null){
+            throw new RegraDeNegocioException("Cupom não encontrado");
+        }
+        log.info("Cupom encontrado!!");
+        CupomDTO cupomDTO = objectMapper.convertValue(cupom, CupomDTO.class);
+        return cupomDTO;
     }
 
 }
