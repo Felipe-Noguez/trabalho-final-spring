@@ -23,42 +23,69 @@ public class CupomService {
     private final ObjectMapper objectMapper;
 
     // criação de um objeto
-    public CupomDTO adicionarCupom(CupomCreateDTO cupom) throws BancoDeDadosException, RegraDeNegocioException{
-            Cupom cupomEntity = objectMapper.convertValue(cupom, Cupom.class);
-            CupomDTO cupomDTO = objectMapper.convertValue(cupomRepository.adicionar(cupomEntity), CupomDTO.class);
-            System.out.println("Cupom adicionado com sucesso! " + cupomEntity);
+    public CupomDTO adicionarCupom(CupomCreateDTO cupom) throws RegraDeNegocioException {
+        Cupom cupomEntity = objectMapper.convertValue(cupom, Cupom.class);
+        CupomDTO cupomDTO = null;
+        try {
+            cupomDTO = objectMapper.convertValue(cupomRepository.adicionar(cupomEntity), CupomDTO.class);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao adicionar o cupom ao banco de dados!");
+        }
+        System.out.println("Cupom adicionado com sucesso! " + cupomEntity);
             return cupomDTO;
     }
 
     // remoção
-    public void removerCupom(Integer id) throws BancoDeDadosException {
-            boolean conseguiuRemover = cupomRepository.remover(id);
-            System.out.println("Cupom removido? " + conseguiuRemover + "| com id=" + id);
+    public void removerCupom(Integer id) throws RegraDeNegocioException {
+        boolean conseguiuRemover = false;
+        try {
+            conseguiuRemover = cupomRepository.remover(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao remover o cupom ao banco de dados!");
+        }
+        System.out.println("Cupom removido? " + conseguiuRemover + "| com id=" + id);
     }
 
     // atualização de um objeto
-    public CupomDTO editarCupom(Integer id, CupomCreateDTO cupom) throws BancoDeDadosException, RegraDeNegocioException {
-
-        if(cupomRepository.findById(id) == null){
-            throw new RegraDeNegocioException("Cupom não encontrado!");
+    public CupomDTO editarCupom(Integer id, CupomCreateDTO cupom) throws RegraDeNegocioException {
+        try {
+                cupomRepository.findById(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao editar no banco de dados!");
         }
 
         Cupom cupomEntity = objectMapper.convertValue(cupom, Cupom.class);
 
-        Cupom editado = cupomRepository.editarCupom(id, cupomEntity);
+        Cupom editado = null;
+
+        try {
+            editado = cupomRepository.editarCupom(id, cupomEntity);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao editar o cupom!");
+        }
+        editado.setIdCupom(id);
 
         log.info("Cupom editado!");
         return objectMapper.convertValue(editado, CupomDTO.class);
     }
 
     // leitura
-    public List<CupomDTO> listarCupons() throws RegraDeNegocioException, BancoDeDadosException {
+    public List<CupomDTO> listarCupons() throws RegraDeNegocioException {
+        try {
             return cupomRepository.listar().stream()
                     .map(cupom -> objectMapper.convertValue(cupom, CupomDTO.class))
                     .toList();
-}
-    public CupomDTO findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-        Cupom cupom = cupomRepository.findById(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao listas os cupons do banco de dados!");
+        }
+    }
+    public CupomDTO findById(Integer id) throws RegraDeNegocioException{
+        Cupom cupom = null;
+        try {
+            cupom = cupomRepository.findById(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível encontrar o ID do cupom no banco de dados!");
+        }
         if(cupom == null){
             throw new RegraDeNegocioException("Cupom não encontrado");
         }

@@ -33,45 +33,72 @@ public class PedidoService {
 
     private final ObjectMapper objectMapper;
 
-
     // criação de um objeto
-    public PedidoDTO adicionarPedido(PedidoCreateDTO pedido) throws BancoDeDadosException, RegraDeNegocioException { // vai adicionar tudo dentro da tabela N para N (Pedido_Produto)
+    public PedidoDTO adicionarPedido(PedidoCreateDTO pedido) throws RegraDeNegocioException { // vai adicionar tudo dentro da tabela N para N (Pedido_Produto)
         Cupom cupom = null;
-        if(pedido.getIdCupom() != null) {
-          CupomDTO cupomDTO = cupomService.findById(pedido.getIdCupom());
-          cupom = objectMapper.convertValue(cupomDTO, Cupom.class);
+        if (pedido.getIdCupom() != null) {
+            CupomDTO cupomDTO = null;
+            try {
+                cupomDTO = cupomService.findById(pedido.getIdCupom());
+            } catch (RegraDeNegocioException e) {
+                throw new RuntimeException(e);
+            }
+            cupom = objectMapper.convertValue(cupomDTO, Cupom.class);
         }
         PedidoDTO pedidoDTO = new PedidoDTO();
-        UsuarioDTO usuario = usuarioService.findById(pedido.getIdUsuario());
+        UsuarioDTO usuario = null;
+        try {
+            usuario = usuarioService.findById(pedido.getIdUsuario());
+        } catch (RegraDeNegocioException e) {
+            throw new RuntimeException(e);
+        }
 
         Pedido pedidoEntity = objectMapper.convertValue(pedido, Pedido.class);
         pedidoEntity.setCupom(cupom);
         pedidoEntity.setIdUsuario(usuario.getIdUsuario());
-        pedidoEntity = pedidoRepository.adicionar(pedidoEntity);
+        try {
+            pedidoEntity = pedidoRepository.adicionar(pedidoEntity);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível adicionar o produto no banco de dados!");
+        }
 
         double valorFinal = 0;
 
         List<ProdutoPedidoDTO> produtoPedidoDTOList = new ArrayList<>();
 
-        for(ProdutoIdQuantidadeCreateDTO produtosIdQuantidadeDTO: pedido.getProdutosDTO()) { //aqui dentro faço o findbyID, calculo o valorFinal tb
+        for (ProdutoIdQuantidadeCreateDTO produtosIdQuantidadeDTO : pedido.getProdutosDTO()) { //aqui dentro faço o findbyID, calculo o valorFinal tb
             ProdutoDTO produtoDTO = produtoService.findById(produtosIdQuantidadeDTO.getIdProduto());
+
             Produto produto = objectMapper.convertValue(produtoDTO, Produto.class);
+
             ProdutoPedido produtoPedido = new ProdutoPedido();
+
             produtoPedido.setProduto(produto);
+
             produtoPedido.setQuantidade(produtosIdQuantidadeDTO.getQuantidade());
+
             produtoPedido.setPedido(pedidoEntity);
-            double valorProdutoPedido = produto.getValor() * produtosIdQuantidadeDTO.getQuantidade() ;
+
+            double valorProdutoPedido = produto.getValor() * produtosIdQuantidadeDTO.getQuantidade();
             produtoPedido.setValor(valorProdutoPedido);
-            produtoPedidoRepository.adicionar(produtoPedido);
+            try {
+                produtoPedidoRepository.adicionar(produtoPedido);
+            } catch (BancoDeDadosException e) {
+                throw new RegraDeNegocioException("Impossível adicionar o ProdutoPedido no banco de dados!");
+            }
             valorFinal += valorProdutoPedido;
             ProdutoPedidoDTO produtoPedidoDTO = objectMapper.convertValue(produtoPedido, ProdutoPedidoDTO.class);
             produtoPedidoDTOList.add(produtoPedidoDTO);
         }
-        if(cupom != null) {
+        if (cupom != null) {
             valorFinal -= cupom.getValor();
         }
         pedidoEntity.setValorFinal(valorFinal);
-        pedidoRepository.editarValorFinal(pedidoEntity.getIdPedido(), valorFinal);
+        try {
+            pedidoRepository.editarValorFinal(pedidoEntity.getIdPedido(), valorFinal);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível editar o valor final do pedido no banco de dados!");
+        }
 
         pedidoDTO.setIdPedido(pedidoEntity.getIdPedido());
         pedidoDTO.setProdutosPedido(produtoPedidoDTOList);
@@ -107,12 +134,12 @@ public class PedidoService {
 //    }
 
     // remoção
-    public void removerPedido(Integer id) {
+    public void removerPedido(Integer id) throws RegraDeNegocioException {
         try {
             boolean conseguiuRemover = pedidoRepository.remover(id);
             System.out.println("Pedido removido? " + conseguiuRemover + "| com id=" + id);
         } catch (BancoDeDadosException e) {
-            e.printStackTrace();
+            throw new RegraDeNegocioException("Impossível remover o pedido no banco de dados!");
         }
     }
 
@@ -129,18 +156,94 @@ public class PedidoService {
 
         log.info("Cupom editado!");
         return objectMapper.convertValue(editado, PedidoDTO.class);
+
+        //try {
+        //            produtoPedidoRepository.removerProdutos(id);
+        //        } catch (BancoDeDadosException e) {
+        //            throw new RegraDeNegocioException("Impossível remover os produtos do pedido no banco de dados!");
+        //        }
+        //
+        //        Cupom cupom = null;
+        //
+        //        if (pedido.getIdCupom() != null) {
+        //            CupomDTO cupomDTO = null;
+        //            try {
+        //                cupomDTO = cupomService.findById(pedido.getIdCupom());
+        //            } catch (RegraDeNegocioException e) {
+        //                throw new RuntimeException(e);
+        //            }
+        //            cupom = objectMapper.convertValue(cupomDTO, Cupom.class);
+        //        }
+        //
+        //        Pedido pedidoEntity = objectMapper.convertValue(pedido, Pedido.class);
+        //        pedidoEntity.setCupom(cupom);
+        //        pedidoEntity.setIdUsuario(id);
+        //        try {
+        //            pedidoEntity = pedidoRepository.adicionar(pedidoEntity);
+        //        } catch (BancoDeDadosException e) {
+        //            throw new RegraDeNegocioException("Impossível adicionar o produto no banco de dados!");
+        //        }
+        //
+        //        double valorFinal = 0;
+        //
+        //        List<ProdutoPedidoDTO> produtoPedidoDTOList = new ArrayList<>();
+        //
+        //        for (ProdutoIdQuantidadeCreateDTO produtosIdQuantidadeDTO : pedido.getProdutosDTO()) { //aqui dentro faço o findbyID, calculo o valorFinal tb
+        //            ProdutoDTO produtoDTO = produtoService.findById(produtosIdQuantidadeDTO.getIdProduto());
+        //
+        //            Produto produto = objectMapper.convertValue(produtoDTO, Produto.class);
+        //
+        //            ProdutoPedido produtoPedido = new ProdutoPedido();
+        //
+        //            produtoPedido.setProduto(produto);
+        //
+        //            produtoPedido.setQuantidade(produtosIdQuantidadeDTO.getQuantidade());
+        //
+        //            produtoPedido.setPedido(pedidoEntity);
+        //
+        //            double valorProdutoPedido = produto.getValor() * produtosIdQuantidadeDTO.getQuantidade();
+        //            produtoPedido.setValor(valorProdutoPedido);
+        //            try {
+        //                produtoPedidoRepository.adicionar(produtoPedido);
+        //            } catch (BancoDeDadosException e) {
+        //                throw new RegraDeNegocioException("Impossível adicionar o ProdutoPedido no banco de dados!");
+        //            }
+        //            valorFinal += valorProdutoPedido;
+        //            ProdutoPedidoDTO produtoPedidoDTO = objectMapper.convertValue(produtoPedido, ProdutoPedidoDTO.class);
+        //            produtoPedidoDTOList.add(produtoPedidoDTO);
+        //        }
+        //        if (cupom != null) {
+        //            valorFinal -= cupom.getValor();
+        //        }
+        //        pedidoEntity.setValorFinal(valorFinal);
+        //        try {
+        //            pedidoRepository.editarValorFinal(pedidoEntity.getIdPedido(), valorFinal);
+        //        } catch (BancoDeDadosException e) {
+        //            throw new RegraDeNegocioException("Impossível editar o valor final do pedido no banco de dados!");
+        //        }
+        //
+        //        PedidoDTO pedidoDTO = new PedidoDTO();
+        //        pedidoDTO.setProdutosPedido(produtoPedidoDTOList);
+        //        pedidoDTO.setValorFinal(valorFinal);
+        //
+        //        return pedidoDTO;
     }
 
     // leitura
     public List<PedidoDTO> listarPedido() throws BancoDeDadosException {
-            return pedidoRepository.listar().stream()
+        return pedidoRepository.listar().stream()
                 .map(pedido -> objectMapper.convertValue(pedido, PedidoDTO.class))
                 .toList();
     }
 
-    public PedidoDTO findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-        Pedido pedido = pedidoRepository.findById(id);
-        if(pedido == null){
+    public PedidoDTO findById(Integer id) throws RegraDeNegocioException {
+        Pedido pedido = null;
+        try {
+            pedido = pedidoRepository.findById(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível encontrar o ID do pedido no banco de dados!");
+        }
+        if (pedido == null) {
             throw new RegraDeNegocioException("Pedido não encontrado");
         }
         log.info("Pedido encontrado!!");

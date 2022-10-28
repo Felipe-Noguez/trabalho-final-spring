@@ -70,6 +70,43 @@ public class ProdutoPedidoRepository implements Repositorio<Integer, ProdutoPedi
         }
     }
 
+    public ProdutoPedido adicionarPedidoExistente(Integer id, ProdutoPedido produtoPedido) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+
+            Integer proximoId = this.getProximoId(con);
+            produtoPedido.setIdProdutoPedido(proximoId);
+
+            String sql = "INSERT INTO PRODUTO_PEDIDO\n" +
+                    "(ID_PRODUTO_PEDIDO,ID_PRODUTO,ID_PEDIDO,QUANTIDADE, VALOR, DELETADO)\n" +
+                    "VALUES(?, ?, ?, ?, ?, ?)\n";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, produtoPedido.getIdProdutoPedido());
+            stmt.setInt(2, produtoPedido.getProduto().getIdProduto());
+            stmt.setInt(3, id);
+            stmt.setInt(4, produtoPedido.getQuantidade());
+            stmt.setDouble(5, produtoPedido.getValor());
+            stmt.setString(6, produtoPedido.getDeletado());
+            int res = stmt.executeUpdate();
+            System.out.println("adicionarPedido.res=" + res);
+            return produtoPedido;
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     @Override
     public boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
@@ -101,6 +138,34 @@ public class ProdutoPedidoRepository implements Repositorio<Integer, ProdutoPedi
         }
     }
 
+    public boolean removerProdutos(Integer id) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+
+            String sql = "DELETE PRODUTO_PEDIDO  \n" +
+                    " WHERE ID_PEDIDO = ?" ;
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
+            // Executa-se a consulta
+            int res = stmt.executeUpdate();
+            System.out.println("removerProdutoPedidoPorId.res=" + res);
+            return res > 0;
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     @Override
     public boolean editar(Integer id, ProdutoPedido produtoPedido) throws BancoDeDadosException {
         Connection con = null;

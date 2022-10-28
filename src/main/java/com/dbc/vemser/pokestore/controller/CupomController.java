@@ -2,12 +2,9 @@ package com.dbc.vemser.pokestore.controller;
 
 import com.dbc.vemser.pokestore.dto.CupomCreateDTO;
 import com.dbc.vemser.pokestore.dto.CupomDTO;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
+import com.dbc.vemser.pokestore.interfaces.DocumentationCupom;
 import com.dbc.vemser.pokestore.service.CupomService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,33 +20,19 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cupom")
-public class CupomController {
+public class CupomController implements DocumentationCupom {
 
     private final CupomService cupomService;
 
-    @Operation(summary = "listar cupons", description = "Lista todos os cupons do banco")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de cupons"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
+    @Override
     @GetMapping// localhost:8080/cupom
-    public List<CupomDTO> list() throws RegraDeNegocioException, BancoDeDadosException {
+    public List<CupomDTO> list() throws RegraDeNegocioException {
         return cupomService.listarCupons();
     }
 
-    @Operation(summary = "criar novo cupom", description = "Cria novo cupomn")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Cria novo cupom"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
+    @Override
     @PostMapping// localhost:8080/cupom
-    public ResponseEntity<CupomDTO> create(@RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException {
+    public ResponseEntity<CupomDTO> create(@RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException {
         log.info("Criando cupom novo....");
 
         CupomDTO cupomDTO = cupomService.adicionarCupom(cupom);
@@ -58,17 +41,10 @@ public class CupomController {
         return new ResponseEntity<>(cupomDTO, HttpStatus.OK);
     }
 
-    @Operation(summary = "modificar um cupom selecionado por id", description = "Modifica um cupom do banco")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Modifica um cupom selecionado"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
+    @Override
     @PutMapping("/{idCupom}")// localhost:8080/cupom/idCupom
     public ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer id,
-                                    @RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException {
+                                    @RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException{
 
         log.info("Atualizando cupom.... ");
 
@@ -79,16 +55,9 @@ public class CupomController {
         return new ResponseEntity<>(cupomDTO, HttpStatus.OK);
     }
 
-    @Operation(summary = "deletar um cupom selecionado por id", description = "Deleta um cupom do banco")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Deleta um cupom selecionado"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
+    @Override
     @DeleteMapping("/{idCupom}") //localhost:8080/cupom/idCupom
-    public ResponseEntity<CupomDTO> delete(@PathVariable("idCupom") Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+    public ResponseEntity<CupomDTO> delete(@PathVariable("idCupom") Integer id)throws RegraDeNegocioException {
         log.info("Deletando a pessoa");
 
         cupomService.removerCupom(id);

@@ -73,7 +73,6 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
         }
     }
 
-
     @Override
     public boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;

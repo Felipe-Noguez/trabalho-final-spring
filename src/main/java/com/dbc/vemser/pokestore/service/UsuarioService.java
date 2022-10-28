@@ -25,56 +25,75 @@ public class UsuarioService {
     private final ObjectMapper objectMapper;
 
     // criação de um objeto
-    public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuario) throws BancoDeDadosException, RegraDeNegocioException {
+    public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuario) throws RegraDeNegocioException {
 
         Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
 
-        Usuario usuarioSalvar = usuarioRepository.adicionar(usuarioEntity);
+        Usuario usuarioSalvar = null;
+        try {
+            usuarioSalvar = usuarioRepository.adicionar(usuarioEntity);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível adicionar o usuario no banco de dados!");
+        }
 
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioSalvar, UsuarioDTO.class);
 
         emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
-
         System.out.println("Usuario adicionado com sucesso! " + usuarioEntity);
 
         return usuarioDTO;
     }
 
     // remoção
-    public void remover(Integer id) throws BancoDeDadosException, RegraDeNegocioException {
-            UsuarioDTO usuarioDeletadoDTO = findById(id);
-            emailService.sendEmailUsuario(usuarioDeletadoDTO, Requisicao.DELETE);
-            boolean conseguiuRemover = usuarioRepository.remover(id);
-            System.out.println("removido? " + conseguiuRemover + "| com id=" + id);
+    public void remover(Integer id) throws RegraDeNegocioException {
+        UsuarioDTO usuarioDeletadoDTO = findById(id);
+
+        emailService.sendEmailUsuario(usuarioDeletadoDTO, Requisicao.DELETE);
+        boolean conseguiuRemover = false;
+        try {
+            conseguiuRemover = usuarioRepository.remover(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao remover o usuario do banco de dados!");
+        }
+        System.out.println("removido? " + conseguiuRemover + "| com id=" + id);
     }
 
     // atualização de um objeto
-    public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException, BancoDeDadosException{
-        System.out.println("Teste 1");
-        if(usuarioRepository.findById(id) == null){
-            throw new RegraDeNegocioException("Usuario não encontrado!");
+    public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+        try {
+            usuarioRepository.findById(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao editar o usuário no banco de dados!");
         }
-
-        System.out.println("Teste 2");
 
         Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
 
-        Usuario editado = usuarioRepository.editarUsuario(id, usuarioEntity);
+        Usuario editado = null;
+        try {
+            editado = usuarioRepository.editarUsuario(id, usuarioEntity);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao editar o usuario!");
+        }
 
-        System.out.println("Teste 3");
+
+        editado.setIdUsuario(id);
 
         log.info("Usuario editado!");
         return objectMapper.convertValue(editado, UsuarioDTO.class);
     }
 
     // leitura
-    public List<UsuarioDTO> listar() throws RegraDeNegocioException, BancoDeDadosException {
-        return usuarioRepository.listar().stream()
+    public List<UsuarioDTO> listar() throws RegraDeNegocioException {
+        try {
+            return usuarioRepository.listar().stream()
                     .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
                     .toList();
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro ao listas os usuários do banco de dados!");
+        }
     }
 
-        public Usuario verificarUsuario (Usuario usuario) {
+    public Usuario verificarUsuario(Usuario usuario) {
         try {
             return usuarioRepository.pegarLogin(usuario);
         } catch (BancoDeDadosException e) {
@@ -82,11 +101,16 @@ public class UsuarioService {
             e.printStackTrace();
         }
         return null;
-        }
+    }
 
-    public UsuarioDTO findById(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-        Usuario usuario = usuarioRepository.findById(id);
-        if(usuario == null){
+    public UsuarioDTO findById(Integer id) throws RegraDeNegocioException {
+        Usuario usuario = null;
+        try {
+            usuario = usuarioRepository.findById(id);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível encontar o ID do usuario no banco de dados!");
+        }
+        if (usuario == null) {
             throw new RegraDeNegocioException("Usuario não encontrado!");
         }
         log.info("Usuario encontrado!");
