@@ -104,6 +104,35 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
         }
     }
 
+    public boolean apagarPedido(Integer id) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+
+            String sql = "DELETE PEDIDO WHERE ID_PEDIDO = ? ";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
+            // Executa-se a consulta
+            int res = stmt.executeUpdate();
+            System.out.println("removerPedidoPorId.res=" + res);
+            return res > 0;
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
     @Override
     public boolean editar(Integer id, Pedido pedido) throws BancoDeDadosException {
@@ -134,7 +163,7 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
 //            }
             stmt.setInt(2, pedido.getIdUsuario());
             stmt.setString(3, pedido.getDeletado());
-            stmt.setInt(4,pedido.getIdPedido());
+            stmt.setInt(4, id);
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();

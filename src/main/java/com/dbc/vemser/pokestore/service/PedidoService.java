@@ -144,18 +144,106 @@ public class PedidoService {
     }
 
     // atualização de um objeto
-    public PedidoDTO editarPedido(Integer id, PedidoCreateDTO pedido) throws BancoDeDadosException, RegraDeNegocioException{
+    public PedidoDTO editarPedido(Integer id, PedidoCreateDTO pedido) throws BancoDeDadosException, RegraDeNegocioException {
 
-        if(pedidoRepository.findById(id) == null){
-            throw new RegraDeNegocioException("Pedido não encontrado!");
+//        if (pedidoRepository.findById(id) == null) {
+//            throw new RegraDeNegocioException("Pedido não encontrado!");
+//        }
+        produtoPedidoRepository.removerProdutos(id);
+        System.out.println("Apagando pedido antigo");
+        pedidoRepository.apagarPedido(id);
+        System.out.println("Pedido apagado");
+        System.out.println("Criando novo pedido");
+
+        Cupom cupom = null;
+
+        if (pedido.getIdCupom() != null) {
+            CupomDTO cupomDTO = null;
+            try {
+                cupomDTO = cupomService.findById(pedido.getIdCupom());
+            } catch (RegraDeNegocioException e) {
+                throw new RuntimeException(e);
+            }
+            cupom = objectMapper.convertValue(cupomDTO, Cupom.class);
+        }
+
+        PedidoDTO pedidoDTO = new PedidoDTO();
+
+        UsuarioDTO usuario = null;
+
+        try {
+            usuario = usuarioService.findById(pedido.getIdUsuario());
+        } catch (RegraDeNegocioException e) {
+            throw new RuntimeException(e);
         }
 
         Pedido pedidoEntity = objectMapper.convertValue(pedido, Pedido.class);
 
-        Pedido editado = pedidoRepository.editarPedido(id, pedidoEntity);
+        pedidoEntity.setIdPedido(id);
 
-        log.info("Cupom editado!");
-        return objectMapper.convertValue(editado, PedidoDTO.class);
+        pedidoEntity.setCupom(cupom);
+
+        pedidoEntity.setIdUsuario(usuario.getIdUsuario());
+
+        try {
+
+            pedidoRepository.apagarPedido(id);
+            pedidoEntity = pedidoRepository.adicionar(pedidoEntity);
+
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível adicionar o produto no banco de dados!");
+        }
+
+        double valorFinal = 0;
+
+        List<ProdutoPedidoDTO> produtoPedidoDTOList = new ArrayList<>();
+
+        for (ProdutoIdQuantidadeCreateDTO produtosIdQuantidadeDTO : pedido.getProdutosDTO()) { //aqui dentro faço o findbyID, calculo o valorFinal tb
+            ProdutoDTO produtoDTO = produtoService.findById(produtosIdQuantidadeDTO.getIdProduto());
+
+            Produto produto = objectMapper.convertValue(produtoDTO, Produto.class);
+
+            ProdutoPedido produtoPedido = new ProdutoPedido();
+
+            produtoPedido.setProduto(produto);
+
+            produtoPedido.setQuantidade(produtosIdQuantidadeDTO.getQuantidade());
+
+            produtoPedido.setPedido(pedidoEntity);
+
+            double valorProdutoPedido = produto.getValor() * produtosIdQuantidadeDTO.getQuantidade();
+            produtoPedido.setValor(valorProdutoPedido);
+            try {
+                produtoPedidoRepository.adicionar(produtoPedido);
+            } catch (BancoDeDadosException e) {
+                throw new RegraDeNegocioException("Impossível adicionar o ProdutoPedido no banco de dados!");
+            }
+            valorFinal += valorProdutoPedido;
+            ProdutoPedidoDTO produtoPedidoDTO = objectMapper.convertValue(produtoPedido, ProdutoPedidoDTO.class);
+            produtoPedidoDTOList.add(produtoPedidoDTO);
+        }
+        if (cupom != null) {
+            valorFinal -= cupom.getValor();
+        }
+        pedidoEntity.setValorFinal(valorFinal);
+        try {
+            pedidoRepository.editarValorFinal(pedidoEntity.getIdPedido(), valorFinal);
+        } catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Impossível editar o valor final do pedido no banco de dados!");
+        }
+
+        pedidoDTO.setIdPedido(pedidoEntity.getIdPedido());
+        pedidoDTO.setProdutosPedido(produtoPedidoDTOList);
+        pedidoDTO.setValorFinal(valorFinal);
+
+        return pedidoDTO;
+
+        //acho que devido a sequence do Pedido, ele ignora mesmo eu removendo o Pedido pelo id e criando outro, ele ta pulando.
+        // fiz inumeros testes e nada, minha cabeça ta nas nuvens ja
+        // Tentarei arrumar isso pra próxima tarefa.
+
+//        return adicionarPedido(pedido);
+    }
 
         //try {
         //            produtoPedidoRepository.removerProdutos(id);
@@ -227,7 +315,6 @@ public class PedidoService {
         //        pedidoDTO.setValorFinal(valorFinal);
         //
         //        return pedidoDTO;
-    }
 
     // leitura
     public List<PedidoDTO> listarPedido() throws BancoDeDadosException {
