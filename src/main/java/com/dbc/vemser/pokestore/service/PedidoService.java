@@ -150,10 +150,10 @@ public class PedidoService {
 //            throw new RegraDeNegocioException("Pedido não encontrado!");
 //        }
         produtoPedidoRepository.removerProdutos(id);
-        System.out.println("Apagando pedido antigo");
-        pedidoRepository.apagarPedido(id);
-        System.out.println("Pedido apagado");
-        System.out.println("Criando novo pedido");
+//        System.out.println("Apagando pedido antigo");
+//        pedidoRepository.apagarPedido(id);
+//        System.out.println("Pedido apagado");
+        System.out.println("Editando o pedido de número = " + id);
 
         Cupom cupom = null;
 
@@ -184,15 +184,6 @@ public class PedidoService {
         pedidoEntity.setCupom(cupom);
 
         pedidoEntity.setIdUsuario(usuario.getIdUsuario());
-
-        try {
-
-            pedidoRepository.apagarPedido(id);
-            pedidoEntity = pedidoRepository.adicionar(pedidoEntity);
-
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Impossível adicionar o produto no banco de dados!");
-        }
 
         double valorFinal = 0;
 
@@ -225,16 +216,24 @@ public class PedidoService {
         if (cupom != null) {
             valorFinal -= cupom.getValor();
         }
+
+        System.out.println("setando valor");
+
         pedidoEntity.setValorFinal(valorFinal);
+
         try {
-            pedidoRepository.editarValorFinal(pedidoEntity.getIdPedido(), valorFinal);
+            pedidoRepository.editarPedido(id, pedidoEntity);
+
         } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Impossível editar o valor final do pedido no banco de dados!");
+            throw new RegraDeNegocioException("Impossível adicionar o pedido no banco de dados!");
         }
 
-        pedidoDTO.setIdPedido(pedidoEntity.getIdPedido());
-        pedidoDTO.setProdutosPedido(produtoPedidoDTOList);
-        pedidoDTO.setValorFinal(valorFinal);
+        System.out.println("Valor setado");
+
+
+        pedidoDTO = objectMapper.convertValue(pedidoEntity, PedidoDTO.class);
+
+        System.out.println("Deu certo hehehe");
 
         return pedidoDTO;
 

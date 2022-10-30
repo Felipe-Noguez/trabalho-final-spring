@@ -151,6 +151,7 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
             sql.append(" ID_CUPOM = ?,");
             sql.append(" ID_USUARIO = ?,");
             sql.append(" DELETADO = ?, ");
+            sql.append(" VALOR_FINAL = ? ");
             sql.append(" WHERE id_pedido = ? ");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
@@ -163,7 +164,8 @@ public class PedidoRepository implements Repositorio<Integer, Pedido> {
 //            }
             stmt.setInt(2, pedido.getIdUsuario());
             stmt.setString(3, pedido.getDeletado());
-            stmt.setInt(4, id);
+            stmt.setDouble(4, pedido.getValorFinal());
+            stmt.setInt(5, id);
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
