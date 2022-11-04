@@ -59,7 +59,7 @@ public class EmailService {
         Map<String, Object> dados = new HashMap<>();
         Template template = null;
         dados.put("nome", usuarioDTO.getNome());
-        dados.put("email", TO);
+        dados.put("email", from);
         dados.put("id", usuarioDTO.getIdUsuario());
 
         switch(requisicao){

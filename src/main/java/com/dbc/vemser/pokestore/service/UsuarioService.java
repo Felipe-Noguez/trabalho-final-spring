@@ -1,8 +1,9 @@
 package com.dbc.vemser.pokestore.service;
 
+import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
-import com.dbc.vemser.pokestore.entity.Usuario;
+import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
@@ -10,6 +11,8 @@ import com.dbc.vemser.pokestore.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,120 +26,62 @@ public class UsuarioService {
     private final ObjectMapper objectMapper;
 
     // criação de um objeto
-    public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+    public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuario){
 
-        Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
+        UsuarioEntity usuarioEntity = objectMapper.convertValue(usuario, UsuarioEntity.class);
+        usuarioEntity = usuarioRepository.save(usuarioEntity);
 
-        Usuario usuarioSalvar = null;
-        try {
-            usuarioSalvar = usuarioRepository.adicionar(usuarioEntity);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Impossível adicionar o usuario no banco de dados!");
-        }
-
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioSalvar, UsuarioDTO.class);
-
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
         emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
-        System.out.println("Usuario adicionado com sucesso! " + usuarioEntity);
-
         return usuarioDTO;
     }
 
     // remoção
     public void remover(Integer id) throws RegraDeNegocioException {
-        UsuarioDTO usuarioDeletadoDTO = findById(id);
 
-        emailService.sendEmailUsuario(usuarioDeletadoDTO, Requisicao.DELETE);
-        boolean conseguiuRemover = false;
-        try {
-            conseguiuRemover = usuarioRepository.remover(id);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao remover o usuario do banco de dados!");
-        }
-        System.out.println("removido? " + conseguiuRemover + "| com id=" + id);
+        UsuarioEntity usuarioEncontrado = findById(id);
+        emailService.sendEmailUsuario(objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class), Requisicao.DELETE);
+        usuarioRepository.delete(usuarioEncontrado);
     }
 
     // atualização de um objeto
-    public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuario) throws RegraDeNegocioException {
-        try {
-            usuarioRepository.findById(id);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao editar o usuário no banco de dados!");
-        }
+    public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException {
 
-        Usuario usuarioEntity = objectMapper.convertValue(usuario, Usuario.class);
+        UsuarioEntity usuarioEncontrado = findById(id);
 
-        Usuario editado = null;
-        try {
-            editado = usuarioRepository.editarUsuario(id, usuarioEntity);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao editar o usuario!");
-        }
+        usuarioEncontrado = objectMapper.convertValue(usuarioAtualizar, UsuarioEntity.class);
+        usuarioEncontrado.setIdUsuario(id);
 
-
-        editado.setIdUsuario(id);
-
-        log.info("Usuario editado!");
-        return objectMapper.convertValue(editado, UsuarioDTO.class);
+        usuarioEncontrado = usuarioRepository.save(usuarioEncontrado);
+        return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
     }
 
     // leitura
-    public List<UsuarioDTO> listar() throws RegraDeNegocioException {
-        try {
-            return usuarioRepository.listar().stream()
-                    .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
-                    .toList();
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao listas os usuários do banco de dados!");
-        }
+    public List<UsuarioDTO> listar(){
+        return usuarioRepository.findAll().stream()
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
     }
 
-    public Usuario verificarUsuario(Usuario usuario) {
-        try {
-            return usuarioRepository.pegarLogin(usuario);
-        } catch (BancoDeDadosException e) {
-            System.out.println("ERRO: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+    public UsuarioEntity findById(Integer id) throws RegraDeNegocioException {
+
+        return usuarioRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado!"));
     }
 
-    public UsuarioDTO findById(Integer id) throws RegraDeNegocioException {
-        Usuario usuario = null;
-        try {
-            usuario = usuarioRepository.findById(id);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Impossível encontar o ID do usuario no banco de dados!");
-        }
-        if (usuario == null) {
-            throw new RegraDeNegocioException("Usuario não encontrado!");
-        }
-        log.info("Usuario encontrado!");
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuario, UsuarioDTO.class);
-        return usuarioDTO;
+    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer numeroPaginas){
+        PageRequest pageRequest = PageRequest.of(pagina, numeroPaginas);
+        Page<UsuarioEntity> paginaRepository = usuarioRepository.findAll(pageRequest);
+        List<UsuarioDTO> usuariosDaPagina = paginaRepository.getContent().stream()
+                .map(usuarioEntity -> objectMapper.convertValue(usuarioEntity, UsuarioDTO.class))
+                .toList();
+        return new PageDTO<>(paginaRepository.getTotalElements(),
+                paginaRepository.getTotalPages(),
+                pagina,
+                numeroPaginas,
+                usuariosDaPagina
+        );
     }
+
+
 }
-//    public static Usuario fazerLogin(UsuarioService usuarioService, Scanner entrada) {
-//
-//        Usuario usuario = new Usuario();
-//        Usuario resultadoUser = null;
-//
-//        try {
-//            while (true) {
-//                System.out.println("Digite o email ");
-//                usuario.setEmail(entrada.nextLine());
-//                System.out.println("Digite a senha:");
-//                usuario.setSenha(entrada.nextLine());
-//                Usuario usuarioEncontrado = usuarioService.verificarUsuario(usuario);
-//                if (usuarioEncontrado.getEmail().equals(usuario.getEmail()) && usuarioEncontrado.getSenha().equals(usuario.getSenha())) {
-//                    System.out.println("\n" + usuario.getEmail() + " Logado com sucesso!");
-//                    resultadoUser = usuarioEncontrado;
-//                    break;
-//                }
-//            }
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//        return resultadoUser;
-//    }
 

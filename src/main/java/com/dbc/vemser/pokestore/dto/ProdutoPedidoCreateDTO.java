@@ -1,16 +1,25 @@
 package com.dbc.vemser.pokestore.dto;
 
-import com.dbc.vemser.pokestore.entity.Pedido;
-import com.dbc.vemser.pokestore.entity.Produto;
+import com.dbc.vemser.pokestore.entity.PedidoEntity;
+import com.dbc.vemser.pokestore.entity.ProdutoEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class ProdutoPedidoCreateDTO {
 
+    @NotNull
+    @Schema(description = "Id do produto")
     private Integer idProduto;
 
-    private Produto produto;
+    @NotNull
+    @Schema(description = "Produto no pedido")
+    private ProdutoDTO produto;
 
-    private Pedido pedido;
+    @NotNull
+    @Schema(description = "Pedido do usuário")
+    private PedidoDTO pedido;
 
 }

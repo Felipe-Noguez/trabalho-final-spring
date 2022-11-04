@@ -28,13 +28,13 @@ public class PedidoController implements DocumentationPedido {
 
     @Override
     @GetMapping
-    public List<PedidoDTO> list() throws RegraDeNegocioException, BancoDeDadosException {
+    public List<PedidoDTO> list() throws RegraDeNegocioException{
         return pedidoService.listarPedido();
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<PedidoDTO> create(@RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException, BancoDeDadosException {
+    public ResponseEntity<PedidoDTO> create(@RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException{
         log.info("Criando novo pedido. . .");
 
         // idCupom, idCliente, idProduto e quantidadeProduto;
@@ -48,7 +48,7 @@ public class PedidoController implements DocumentationPedido {
     @Override
     @PutMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id,
-                                           @RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException, BancoDeDadosException {
+                                           @RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException {
         log.info("Atualizando pedido.... ");
 
         PedidoDTO pedidoDTO = pedidoService.editarPedido(id, pedido);

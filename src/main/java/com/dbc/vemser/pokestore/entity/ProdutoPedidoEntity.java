@@ -1,0 +1,48 @@
+package com.dbc.vemser.pokestore.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+
+import javax.persistence.*;
+import java.util.Set;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@Entity(name = "Produto_Pedido")
+public class ProdutoPedidoEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUTO_PEDIDO_SEQ")
+    @SequenceGenerator(name = "PRODUTO_PEDIDO_SEQ", sequenceName = "SEQ_PRODUTO_PEDIDO", allocationSize = 1)
+    @Column(name = "id_produto_pedido")
+    private Integer idProdutoPedido;
+
+    @Column(name = "id_produto")
+    private Integer idProduto;
+
+    @Column(name = "id_pedido")
+    private Integer idPedido;
+
+    @Column(name = "quantidade")
+    private Integer quantidade;
+
+    @Column(name = "valor")
+    private Double valor;
+
+    @Column(name = "deletado")
+    private String deletado = "F";
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_produto", referencedColumnName = "id_produto")
+    private ProdutoEntity produto;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
+    private PedidoEntity pedido;
+
+}

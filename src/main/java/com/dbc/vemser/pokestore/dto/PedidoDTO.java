@@ -1,19 +1,19 @@
 package com.dbc.vemser.pokestore.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class PedidoDTO {
 
     private double valorFinal;
-
     private Integer idPedido;
-
     private List<ProdutoPedidoDTO> produtosPedido = new ArrayList<>();
 
 }

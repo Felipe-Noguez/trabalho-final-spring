@@ -1,30 +1,29 @@
 package com.dbc.vemser.pokestore.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class PedidoCreateDTO {
 
+    @NotNull
+    @Schema(description = "Id do cupom utilizado")
     private Integer idCupom;
 
-//    private Cupom cupom; // ID
-
+    @NotNull
+    @Schema(description = "Id do usuário")
     private Integer idUsuario;
 
+    @Schema(description = "Remoção")
     private String deletado;
 
-    private List<ProdutoIdQuantidadeCreateDTO> produtosDTO = new ArrayList<>(); //produtoPedido inserir produto;
+    @Schema(description = "Lista de produtos")
+    private List<ProdutoIdQuantidadeCreateDTO> produtosDTO = new ArrayList<>();
 
-//    private List<ProdutoPedidoDTO> produtosPedido = new ArrayList<>();
 }
 
-//  primeuiro pedido id dele, inserir produtoPedido + idProdutos;
-//  salvar o pedido
-//  na tabela de relação (mesmo bloco de codigo), pegar esses ids, inserindo na tabela de relação (gerando uma linha)
-//  no outro ponto, dar um get do Pedido, dar um get em cada item;
-//  Put (ter que fazer, ex, trocar o pedido 5, pega o ele, exclui ele da tabela de relação (ProdutoPedido), adicionar os itens novos, com oidPedido5;
-//  Esse put chamar o delete e depois o post(create);
-// ver com o Noah (stream para cada iD pega cada item)
+

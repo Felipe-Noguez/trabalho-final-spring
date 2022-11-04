@@ -9,11 +9,6 @@ public class ProdutoIdQuantidadeCreateDTO {
 
     @NotNull
     private int idProduto;
-
     @NotNull
     private int quantidade;
-
-//    public Integer getId(){
-//        return idProduto;
-//    }
 }

@@ -3,8 +3,7 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.CupomCreateDTO;
 import com.dbc.vemser.pokestore.dto.CupomDTO;
-import com.dbc.vemser.pokestore.entity.Cupom;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
+import com.dbc.vemser.pokestore.entity.CupomEntity;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.CupomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,77 +18,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CupomService {
     private final CupomRepository cupomRepository;
-
     private final ObjectMapper objectMapper;
 
     // criação de um objeto
-    public CupomDTO adicionarCupom(CupomCreateDTO cupom) throws RegraDeNegocioException {
-        Cupom cupomEntity = objectMapper.convertValue(cupom, Cupom.class);
-        CupomDTO cupomDTO = null;
-        try {
-            cupomDTO = objectMapper.convertValue(cupomRepository.adicionar(cupomEntity), CupomDTO.class);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao adicionar o cupom ao banco de dados!");
-        }
-        System.out.println("Cupom adicionado com sucesso! " + cupomEntity);
-            return cupomDTO;
+    public CupomDTO adicionarCupom(CupomCreateDTO cupom) {
+        CupomEntity cupomEntity = objectMapper.convertValue(cupom, CupomEntity.class);
+
+        return objectMapper.convertValue(
+                cupomRepository.save(cupomEntity), CupomDTO.class);
     }
 
     // remoção
     public void removerCupom(Integer id) throws RegraDeNegocioException {
-        boolean conseguiuRemover = false;
-        try {
-            conseguiuRemover = cupomRepository.remover(id);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao remover o cupom ao banco de dados!");
-        }
-        System.out.println("Cupom removido? " + conseguiuRemover + "| com id=" + id);
+        CupomEntity cupomEntity = findById(id);
+        cupomRepository.delete(cupomEntity);
     }
 
     // atualização de um objeto
-    public CupomDTO editarCupom(Integer id, CupomCreateDTO cupom) throws RegraDeNegocioException {
-        try {
-                cupomRepository.findById(id);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao editar no banco de dados!");
-        }
+    public CupomDTO editarCupom(Integer id, CupomCreateDTO cupomAtualiazar) {
 
-        Cupom cupomEntity = objectMapper.convertValue(cupom, Cupom.class);
+        cupomRepository.findById(id);
+        CupomEntity cupomEntity = objectMapper.convertValue(cupomAtualiazar, CupomEntity.class);
 
-        Cupom editado = null;
-
-        try {
-            editado = cupomRepository.editarCupom(id, cupomEntity);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao editar o cupom!");
-        }
-        editado.setIdCupom(id);
-
-        log.info("Cupom editado!");
-        return objectMapper.convertValue(editado, CupomDTO.class);
+        cupomEntity = cupomRepository.save(cupomEntity);
+        return objectMapper.convertValue(cupomEntity, CupomDTO.class);
     }
 
     // leitura
-    public List<CupomDTO> listarCupons() throws RegraDeNegocioException {
-        try {
-            return cupomRepository.listar().stream()
-                    .map(cupom -> objectMapper.convertValue(cupom, CupomDTO.class))
-                    .toList();
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro ao listas os cupons do banco de dados!");
-        }
+    public List<CupomDTO> listarCupons(){
+
+        return cupomRepository.findAll().stream()
+                .map(cupom -> objectMapper.convertValue(cupom, CupomDTO.class))
+                .toList();
     }
-    public CupomDTO findById(Integer id) throws RegraDeNegocioException{
-        Cupom cupom = null;
 
-        try {
-            cupom = cupomRepository.findById(id);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Cupom não encontrado!");
-        }
+    public CupomEntity findById(Integer id) throws RegraDeNegocioException{
 
-        log.info("Cupom encontrado!!");
-        return objectMapper.convertValue(cupom, CupomDTO.class);
+        return cupomRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Cupom não listado."));
+
     }
 
 }

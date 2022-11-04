@@ -1,6 +1,5 @@
 package com.dbc.vemser.pokestore.dto;
 
-import com.dbc.vemser.pokestore.entity.Usuario;
 import com.dbc.vemser.pokestore.enums.Tipos;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

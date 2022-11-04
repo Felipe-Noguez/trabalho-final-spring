@@ -1,12 +1,17 @@
 package com.dbc.vemser.pokestore.controller;
 
+import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO;
+import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.interfaces.DocumentationUsuario;
 import com.dbc.vemser.pokestore.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +29,17 @@ import java.util.List;
 public class UsuarioController implements DocumentationUsuario {
 
     private final UsuarioService usuarioService;
+
+//    @GetMapping("/relatorio-usuario-pedido")
+//    public List<UsuarioRelatorioPedidoDTO> relatorioUsuarioPedido(@RequestParam(required = false)Integer id){
+//        return usuarioService.relatorioUsuarioPedido(id);
+//    }
+
+    @Override
+    @GetMapping("/usuarios-paginados")
+    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer numeroPaginas) {
+        return usuarioService.listarUsuariosPaginados(pagina, numeroPaginas);
+    }
 
     @Override
     @GetMapping// localhost:1521/usuario

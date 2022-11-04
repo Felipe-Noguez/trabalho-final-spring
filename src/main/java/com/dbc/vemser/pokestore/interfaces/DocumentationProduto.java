@@ -1,5 +1,6 @@
 package com.dbc.vemser.pokestore.interfaces;
 
+import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoCreateDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoDTO;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
@@ -14,6 +15,18 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface DocumentationProduto {
+
+    @Operation(summary = "listar produtos de forma paginada", description = "Lista produtos de acordo com a paginação desejada")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista paginada"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/produtos-paginados")
+    public PageDTO<ProdutoDTO> listarProdutosPaginados(Integer pagina, Integer numeroPaginas);
+
 
     @Operation(summary = "listar produtos", description = "Lista todos os produtos do banco")
     @ApiResponses(
