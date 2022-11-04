@@ -25,12 +25,7 @@ public class PedidoService {
     private final ProdutoService produtoService;
     private final UsuarioService usuarioService;
     private final PedidoRepository pedidoRepository;
-
-    private final ProdutoRepository produtoRepository;
-
-    private final CupomRepository cupomRepository;
     private final ProdutoPedidoRepository produtoPedidoRepository;
-
     private final ObjectMapper objectMapper;
 
     // criação de um objeto
@@ -144,12 +139,17 @@ public class PedidoService {
     }
 
     // atualização de um objeto
-    public PedidoDTO editarPedido(Integer id, PedidoCreateDTO pedido) throws BancoDeDadosException, RegraDeNegocioException {
+    public PedidoDTO editarPedido(Integer id, PedidoCreateDTO pedido) throws RegraDeNegocioException {
 
 //        if (pedidoRepository.findById(id) == null) {
 //            throw new RegraDeNegocioException("Pedido não encontrado!");
 //        }
-        produtoPedidoRepository.removerProdutos(id);
+        try {
+            produtoPedidoRepository.removerProdutos(id);
+        }catch (BancoDeDadosException e){
+            throw new RegraDeNegocioException("Não foi possivel remover produtos!");
+        }
+
 //        System.out.println("Apagando pedido antigo");
 //        pedidoRepository.apagarPedido(id);
 //        System.out.println("Pedido apagado");
@@ -316,25 +316,25 @@ public class PedidoService {
         //        return pedidoDTO;
 
     // leitura
-    public List<PedidoDTO> listarPedido() throws BancoDeDadosException {
+    public List<PedidoDTO> listarPedido() throws RegraDeNegocioException {
+        try{
+
         return pedidoRepository.listar().stream()
                 .map(pedido -> objectMapper.convertValue(pedido, PedidoDTO.class))
                 .toList();
+
+        }catch (BancoDeDadosException e){
+            throw new RegraDeNegocioException("Erro ao listar pedidos!");
+        }
     }
 
     public PedidoDTO findById(Integer id) throws RegraDeNegocioException {
         Pedido pedido = null;
         try {
-            pedido = pedidoRepository.findById(id);
+            return objectMapper.convertValue(pedidoRepository.findById(id), PedidoDTO.class);
         } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Impossível encontrar o ID do pedido no banco de dados!");
+            throw new RegraDeNegocioException("Pedido não encontrado!");
         }
-        if (pedido == null) {
-            throw new RegraDeNegocioException("Pedido não encontrado");
-        }
-        log.info("Pedido encontrado!!");
-        PedidoDTO pedidoDTO = objectMapper.convertValue(pedido, PedidoDTO.class);
-        return pedidoDTO;
     }
 
 }

@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutoService {
     private final ProdutoRepository produtoRepository;
-
     private final ObjectMapper objectMapper;
 
     // criação de um objeto

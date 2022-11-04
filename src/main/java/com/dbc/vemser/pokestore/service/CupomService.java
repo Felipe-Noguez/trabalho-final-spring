@@ -81,17 +81,15 @@ public class CupomService {
     }
     public CupomDTO findById(Integer id) throws RegraDeNegocioException{
         Cupom cupom = null;
+
         try {
             cupom = cupomRepository.findById(id);
         } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Impossível encontrar o ID do cupom no banco de dados!");
+            throw new RegraDeNegocioException("Cupom não encontrado!");
         }
-        if(cupom == null){
-            throw new RegraDeNegocioException("Cupom não encontrado");
-        }
+
         log.info("Cupom encontrado!!");
-        CupomDTO cupomDTO = objectMapper.convertValue(cupom, CupomDTO.class);
-        return cupomDTO;
+        return objectMapper.convertValue(cupom, CupomDTO.class);
     }
 
 }

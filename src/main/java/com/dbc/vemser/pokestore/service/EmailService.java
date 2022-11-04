@@ -37,34 +37,6 @@ public class EmailService {
 
     private final JavaMailSender emailSender;
 
-    public void sendSimpleMessage() {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(from);
-        message.setTo(TO);
-        message.setSubject("Assunto");
-        message.setText("Teste \n minha mensagem \n\nAtt,\nSistema.");
-        emailSender.send(message);
-    }
-
-    public void sendWithAttachment() throws MessagingException, FileNotFoundException {
-        MimeMessage message = emailSender.createMimeMessage();
-
-        MimeMessageHelper helper = new MimeMessageHelper(message,
-                true);
-
-        helper.setFrom(from);
-        helper.setTo(TO);
-        helper.setSubject("Subject");
-        helper.setText("Teste\n minha mensagem \n\nAtt,\nSistema.");
-
-        File file1 = ResourceUtils.getFile("classpath:imagem.jpg");
-        FileSystemResource file
-                = new FileSystemResource(file1);
-        helper.addAttachment(file1.getName(), file);
-
-        emailSender.send(message);
-    }
-
     public void sendEmailUsuario(UsuarioDTO pessoaDTO, Requisicao requisicao) {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         try {
@@ -92,13 +64,13 @@ public class EmailService {
 
         switch(requisicao){
             case CREATE -> {
-                template = fmConfiguration.getTemplate("email-template.ftl");
+                template = fmConfiguration.getTemplate("email-template.html");
             }
             case UPDATE -> {
-                template = fmConfiguration.getTemplate("email-template-atualizar.ftl");
+                template = fmConfiguration.getTemplate("email-template-atualizar.html");
             }
             case DELETE -> {
-                template = fmConfiguration.getTemplate("email-template-excluir.ftl");
+                template = fmConfiguration.getTemplate("email-template-excluir.html");
             }
 
             default ->  {
@@ -106,7 +78,6 @@ public class EmailService {
             }
         }
 
-        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-        return html;
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
 }
