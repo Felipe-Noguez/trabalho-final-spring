@@ -60,7 +60,7 @@ public interface DocumentationUsuario {
             }
     )
     @GetMapping// localhost:1521/usuario
-    public List<UsuarioDTO> list() throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<List<UsuarioDTO>> list() throws RegraDeNegocioException, BancoDeDadosException;
 
     @Operation(summary = "criar novo usuario", description = "Cria novo usuario no banco")
     @ApiResponses(

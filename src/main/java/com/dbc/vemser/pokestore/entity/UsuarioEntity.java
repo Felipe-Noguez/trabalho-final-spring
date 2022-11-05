@@ -46,9 +46,6 @@ public class UsuarioEntity {
     @Column(name = "telefone")
     private String telefone;
 
-    @Column(name = "deletado")
-    private String deletado = "F";
-
     @JsonIgnore
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ProdutoEntity> produtos;

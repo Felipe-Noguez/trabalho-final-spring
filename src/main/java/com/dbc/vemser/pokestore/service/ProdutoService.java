@@ -23,20 +23,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutoService {
     private final ProdutoRepository produtoRepository;
+    private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 
     // criação de um objeto
-    public ProdutoDTO adicionarProduto(ProdutoCreateDTO produto) {
+    public ProdutoDTO adicionarProduto(ProdutoCreateDTO produtoCreate) throws RegraDeNegocioException {
 
-        ProdutoEntity produtoAdicionado = objectMapper.convertValue(produto, ProdutoEntity.class);
-        return objectMapper.convertValue(produtoRepository.save(produtoAdicionado), ProdutoDTO.class);
+        ProdutoEntity produtoEntity = objectMapper.convertValue(produtoCreate, ProdutoEntity.class);
+        produtoEntity.setUsuario(usuarioService.findById(produtoCreate.getIdUsuario()));
+
+        ProdutoDTO produtoDTO = objectMapper.convertValue(produtoRepository.save(produtoEntity), ProdutoDTO.class);
+        produtoDTO.setIdProduto(produtoCreate.getIdUsuario());
+        return produtoDTO;
     }
 
     // remoção
     public void removerProduto(Integer id) throws RegraDeNegocioException {
         ProdutoEntity produto = findById(id);
         produtoRepository.delete(produto);
-
     }
 
     // atualização de um objeto

@@ -18,9 +18,6 @@ public class PedidoCreateDTO {
     @Schema(description = "Id do usuário")
     private Integer idUsuario;
 
-    @Schema(description = "Remoção")
-    private String deletado;
-
     @Schema(description = "Lista de produtos")
     private List<ProdutoIdQuantidadeCreateDTO> produtosDTO = new ArrayList<>();
 

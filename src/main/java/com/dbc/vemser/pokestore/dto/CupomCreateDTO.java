@@ -11,6 +11,4 @@ public class CupomCreateDTO {
     @Schema(description = "Valor de desconto que o cupom proporciona")
     private Double valor;
 
-    @NotNull
-    private String deletado;
 }

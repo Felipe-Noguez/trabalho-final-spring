@@ -9,7 +9,6 @@ import javax.validation.constraints.*;
 @Data
 public class ProdutoCreateDTO {
 
-
     @NotNull
     @Size(max = 250)
     @Schema(description = "Nome do produto")
@@ -36,8 +35,5 @@ public class ProdutoCreateDTO {
     @Schema(description = "Id do usuário que cadadstrou o produto")
     private Integer idUsuario;
 
-    @NotBlank
-    @Schema(description = "Informação se o produto está ativo")
-    private String deletado;
 
 }

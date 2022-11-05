@@ -34,9 +34,6 @@ public class PedidoEntity {
     @Column(name = "valor_final")
     private Double valorFinal;
 
-    @Column(name = "deletado")
-    private String deletado = "F";
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")

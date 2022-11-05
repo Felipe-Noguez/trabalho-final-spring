@@ -24,7 +24,7 @@ public interface DocumentationCupom {
             }
     )
     @GetMapping// localhost:8080/cupom
-    public List<CupomDTO> list() throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<List<CupomDTO>> list() throws RegraDeNegocioException, BancoDeDadosException;
 
     @Operation(summary = "criar novo cupom", description = "Cria novo cupomn")
     @ApiResponses(

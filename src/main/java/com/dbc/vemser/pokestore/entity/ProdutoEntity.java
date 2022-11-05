@@ -36,9 +36,6 @@ public class ProdutoEntity {
     @Column(name = "valor")
     private Double valor;
 
-    @Column(name = "deletado")
-    private String deletado = "F";
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")

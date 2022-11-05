@@ -67,7 +67,7 @@ public class PedidoService {
         return salvarPedido(pedidoEntity);
     }
 
-    public List<PedidoDTO> listarPedido() throws RegraDeNegocioException {
+    public List<PedidoDTO> listarPedido() {
         return pedidoRepository.findAll().stream()
                 .map(pedido -> {
                     PedidoDTO pedidoDTO = objectMapper.convertValue(pedido, PedidoDTO.class);

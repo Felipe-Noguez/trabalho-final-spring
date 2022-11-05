@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class ProdutoPedidoDTO extends  ProdutoPedidoCreateDTO{
 
     private Integer idProdutoPedido;
-
 }
 

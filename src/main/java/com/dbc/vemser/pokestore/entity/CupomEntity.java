@@ -23,9 +23,6 @@ public class CupomEntity {
     @Column(name = "desconto")
     private Double valor;
 
-    @Column(name = "deletado")
-    private String deletado = "F";
-
     @JsonIgnore
     @OneToMany(mappedBy = "cupom", fetch = FetchType.LAZY)
     private Set<PedidoEntity> pedidos;

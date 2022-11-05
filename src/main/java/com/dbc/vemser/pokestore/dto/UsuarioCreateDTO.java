@@ -49,8 +49,4 @@ public class UsuarioCreateDTO {
     @Schema(description = "Telefone do usuario")
     private String telefone;
 
-    @NotNull
-    @Schema(description = "Informação se o usuário está ativo")
-    private String deletado;
-
 }

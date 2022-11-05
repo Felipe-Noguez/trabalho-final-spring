@@ -50,8 +50,8 @@ public class UsuarioController implements DocumentationUsuario {
 
     @Override
     @GetMapping// localhost:1521/usuario
-    public List<UsuarioDTO> list() throws RegraDeNegocioException {
-        return usuarioService.listar();
+    public ResponseEntity<List<UsuarioDTO>> list() throws RegraDeNegocioException {
+        return ResponseEntity.ok(usuarioService.listar());
     }
 
     @Override
@@ -71,10 +71,7 @@ public class UsuarioController implements DocumentationUsuario {
     public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id,
                                              @RequestBody @Valid UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException {
         log.info("Atualizando usuário....");
-
-
         UsuarioDTO usuarioDTO = usuarioService.editar(id, usuarioAtualizar);
-
         log.info("Usuário atualizado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
@@ -84,10 +81,9 @@ public class UsuarioController implements DocumentationUsuario {
     @Override
     @DeleteMapping("/{idUsuario}") // localhost:1521/pessoa/10
     public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException {
+
         log.info("Deletando a pessoa");
-
         usuarioService.remover(id);
-
         log.info("Deletado com sucesso!");
 
         return ResponseEntity.noContent().build();

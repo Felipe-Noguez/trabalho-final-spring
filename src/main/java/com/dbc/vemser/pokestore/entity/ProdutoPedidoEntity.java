@@ -30,9 +30,6 @@ public class ProdutoPedidoEntity {
     @Column(name = "valor")
     private Double valor;
 
-    @Column(name = "deletado")
-    private String deletado = "F";
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_produto", referencedColumnName = "id_produto")
