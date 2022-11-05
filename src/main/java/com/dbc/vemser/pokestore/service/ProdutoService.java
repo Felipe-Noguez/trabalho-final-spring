@@ -74,8 +74,11 @@ public class ProdutoService {
         PageRequest pageRequest = PageRequest.of(pagina, numeroPaginas);
         Page<ProdutoEntity> paginaRepository = produtoRepository.findAll(pageRequest);
         List<ProdutoDTO> produtosDaPagina = paginaRepository.getContent().stream()
-                .map(produtoEntity -> objectMapper.convertValue(produtoEntity, ProdutoDTO.class))
-                .toList();
+                .map(produto ->  {
+                    ProdutoDTO produtoDTO = objectMapper.convertValue(produto, ProdutoDTO.class);
+                    produtoDTO.setIdUsuario(produto.getUsuario().getIdUsuario());
+                    return produtoDTO;
+                }).toList();
         return new PageDTO<>(paginaRepository.getTotalElements(),
                 paginaRepository.getTotalPages(),
                 pagina,
