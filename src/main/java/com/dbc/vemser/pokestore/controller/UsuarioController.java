@@ -1,17 +1,11 @@
 package com.dbc.vemser.pokestore.controller;
 
-import com.dbc.vemser.pokestore.dto.PageDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO;
-import com.dbc.vemser.pokestore.entity.UsuarioEntity;
+import com.dbc.vemser.pokestore.dto.*;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.interfaces.DocumentationUsuario;
 import com.dbc.vemser.pokestore.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -38,15 +32,15 @@ public class UsuarioController implements DocumentationUsuario {
 
     @Override
     @GetMapping("/relatorio-usuario-pedido")
-    public List<UsuarioRelatorioPedidoDTO> relatorioUsuariosPedido(@RequestParam(required = false)Integer idUsuario) {
-        return usuarioService.listarRelatorioUsuarioPedido(idUsuario);
+    public ResponseEntity<List<UsuarioRelatorioPedidoDTO>> relatorioUsuariosPedido(@RequestParam(required = false)Integer idUsuario) {
+        return new ResponseEntity<>(usuarioService.listarRelatorioUsuarioPedido(idUsuario), HttpStatus.OK);
     }
 
-//    @Override
-//    @GetMapping("/relatorio-geral-usuario-")
-//    public List<UsuarioRelatorioPedidoDTO> relatorioGeralUsuarios(@RequestParam(required = false)Integer idUsuario) {
-//        return usuarioService.listarRelatorioGeralUsuario(idUsuario);
-//    }
+    @Override
+    @GetMapping("/relatorio-geral-usuario-")
+    public ResponseEntity<List<UsuarioRelatorioGeralDTO>> relatorioGeralUsuarios(@RequestParam(required = false)Integer idUsuario) {
+        return new ResponseEntity<>(usuarioService.listarRelatorioGeralUsuario(idUsuario), HttpStatus.OK);
+    }
 
     @Override
     @GetMapping// localhost:1521/usuario
