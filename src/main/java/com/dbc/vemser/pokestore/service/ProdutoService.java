@@ -3,10 +3,7 @@ package com.dbc.vemser.pokestore.service;
 import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoCreateDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioDTO;
 import com.dbc.vemser.pokestore.entity.ProdutoEntity;
-import com.dbc.vemser.pokestore.entity.UsuarioEntity;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.ProdutoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,11 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

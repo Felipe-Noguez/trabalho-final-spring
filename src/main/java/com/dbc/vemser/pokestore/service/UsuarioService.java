@@ -3,7 +3,6 @@ package com.dbc.vemser.pokestore.service;
 import com.dbc.vemser.pokestore.dto.*;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.enums.Requisicao;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,29 +54,14 @@ public class UsuarioService {
     }
 
     // leitura
-    public List<UsuarioDTO> listar(){
-        return usuarioRepository.findAll().stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
-                .toList();
-    }
-
-    public UsuarioEntity findById(Integer id) throws RegraDeNegocioException {
-
-        return usuarioRepository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado!"));
-    }
-
-    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer numeroPaginas){
-        PageRequest pageRequest = PageRequest.of(pagina, numeroPaginas);
+    public PageDTO<UsuarioDTO> listar(Integer pagina, Integer tamanho){
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<UsuarioEntity> paginaRepository = usuarioRepository.findAll(pageRequest);
         List<UsuarioDTO> usuariosDaPagina = paginaRepository.getContent().stream()
                 .map(usuarioEntity -> objectMapper.convertValue(usuarioEntity, UsuarioDTO.class))
                 .toList();
-        return new PageDTO<>(paginaRepository.getTotalElements(),
-                paginaRepository.getTotalPages(),
-                pagina,
-                numeroPaginas,
-                usuariosDaPagina
-        );
+
+        return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, usuariosDaPagina);
     }
 
     public List<UsuarioRelatorioPedidoDTO> listarRelatorioUsuarioPedido (Integer id) {
@@ -86,6 +70,11 @@ public class UsuarioService {
 
     public List<UsuarioRelatorioGeralDTO> listarRelatorioGeralUsuario (Integer id) {
         return  usuarioRepository.relatorioGeralUsuario(id);
+    }
+
+    public UsuarioEntity findById(Integer id) throws RegraDeNegocioException {
+        return usuarioRepository.findById(id).orElseThrow(
+                () -> new RegraDeNegocioException("Usuario não encontrado!"));
     }
 }
 

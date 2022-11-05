@@ -25,12 +25,6 @@ public class UsuarioController implements DocumentationUsuario {
     private final UsuarioService usuarioService;
 
     @Override
-    @GetMapping("/usuarios-paginados")
-    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer tamanho) {
-        return usuarioService.listarUsuariosPaginados(pagina, tamanho);
-    }
-
-    @Override
     @GetMapping("/relatorio-usuario-pedido")
     public ResponseEntity<List<UsuarioRelatorioPedidoDTO>> relatorioUsuariosPedido(@RequestParam(required = false)Integer idUsuario) {
         return new ResponseEntity<>(usuarioService.listarRelatorioUsuarioPedido(idUsuario), HttpStatus.OK);
@@ -44,8 +38,8 @@ public class UsuarioController implements DocumentationUsuario {
 
     @Override
     @GetMapping// localhost:1521/usuario
-    public ResponseEntity<List<UsuarioDTO>> list() throws RegraDeNegocioException {
-        return ResponseEntity.ok(usuarioService.listar());
+    public ResponseEntity<PageDTO<UsuarioDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        return ResponseEntity.ok(usuarioService.listar(pagina, tamanho));
     }
 
     @Override

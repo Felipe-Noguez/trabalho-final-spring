@@ -15,17 +15,6 @@ import java.util.List;
 
 public interface DocumentationUsuario {
 
-    @Operation(summary = "listar usuarios de forma paginada", description = "Lista usuarios de acordo com a paginacao desejada")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista paginada"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/usuarios-paginados")
-    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer tamanho);
-
     @Operation(summary = "Relatório de usuário", description = "Relatório de pedidos do usuarios")
     @ApiResponses(
             value = {
@@ -57,7 +46,7 @@ public interface DocumentationUsuario {
             }
     )
     @GetMapping// localhost:1521/usuario
-    public ResponseEntity<List<UsuarioDTO>> list() throws RegraDeNegocioException;
+    public ResponseEntity<PageDTO<UsuarioDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "criar novo usuario", description = "Cria novo usuario no banco")
     @ApiResponses(
