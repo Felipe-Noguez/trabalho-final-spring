@@ -11,18 +11,18 @@ import java.util.List;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
 
-//    @Query(" select new com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO (" +
-//            " u.idUsuario, " +
-//            " u.nomeUsuario, " +
-//            " u.email, " +
-//            " u.cidade, " +
-//            " p.idPedido, " +
-//            " p.valorFinal " +
-//            ")" +
-//            " from Usuario u " +
-//            " left join u.pedidos " +
-//            " where (:idUsuario is null or u.idUsuario = : idPessoa) ")
-//    List<UsuarioRelatorioPedidoDTO> relatorioUsuarioPedido(Integer idUsuario);
+    @Query(" select new com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO (" +
+            " u.idUsuario, " +
+            " u.nome, " +
+            " u.email, " +
+            " u.cidade, " +
+            " p.idPedido, " +
+            " p.valorFinal " +
+            ")" +
+            " from USUARIO u " +
+            " left join u.pedidos p " +
+            " where (:idUsuario is null or u.idUsuario = : idUsuario) ")
+    List<UsuarioRelatorioPedidoDTO> relatorioUsuarioPedido(Integer idUsuario);
 
 
 //    @Query(" select new com.dbc.vemser.pokestore.dto.UsuarioRelatorioGeralDTO (" +
@@ -43,15 +43,11 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 //            " c.idCupom," +
 //            " c.desconto " +
 //            ")" +
-//            " from Usuario u " +
-//            " left join u.pedidos" +
-//            " left join u.produtos" +
-//            " left join c.pedidos" +
-//            " left join pe.produtosPedidos" +
-//            " left join prp.produto " +
-//            " left join prp.pedido " +
-//            " left join pr.usuario" +
-//            " left join pr.produtosPedidos" +
+//            " from USUARIO u " +
+//            " left join u.pedidos pe " +
+//            " left join u.produtos prp " +
+//            " left join u.pedidos pe " +
+//            " left join u.produtosPedidos pr" +
 //            " where (:idUsuario is null or u.idUsuario = : idPessoa) ")
 //    List<UsuarioRelatorioPedidoDTO> relatorioGeralUsuario(Integer idUsuario);
 

@@ -23,7 +23,7 @@ public class ProdutoCreateDTO {
     @NotNull
     @Positive
     @Schema(description = "Quantidade de produtos disponíveis")
-    private int quantidade;
+    private Integer quantidade;
 
     @NotNull
     @Schema(description = "Tipo de produto")
@@ -31,10 +31,10 @@ public class ProdutoCreateDTO {
 
     @NotNull
     @Schema(description = "Valor do produto")
-    private double valor;
+    private Double valor;
 
     @Schema(description = "Id do usuário que cadadstrou o produto")
-    private int idUsuario;
+    private Integer idUsuario;
 
     @NotBlank
     @Schema(description = "Informação se o produto está ativo")

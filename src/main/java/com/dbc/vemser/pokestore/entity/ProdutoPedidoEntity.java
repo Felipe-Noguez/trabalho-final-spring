@@ -9,7 +9,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity(name = "PRODUTO_PEDIDO")
 public class ProdutoPedidoEntity {
 
@@ -35,7 +34,7 @@ public class ProdutoPedidoEntity {
     private String deletado = "F";
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_produto", referencedColumnName = "id_produto")
     private ProdutoEntity produto;
 

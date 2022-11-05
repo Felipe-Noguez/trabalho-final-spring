@@ -30,26 +30,21 @@ public class UsuarioController implements DocumentationUsuario {
 
     private final UsuarioService usuarioService;
 
-//    @GetMapping("/relatorio-usuario-pedido")
-//    public List<UsuarioRelatorioPedidoDTO> relatorioUsuarioPedido(@RequestParam(required = false)Integer id){
-//        return usuarioService.relatorioUsuarioPedido(id);
-//    }
-
     @Override
     @GetMapping("/usuarios-paginados")
     public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer quantidadePorPagina) {
         return usuarioService.listarUsuariosPaginados(pagina, quantidadePorPagina);
     }
 
-//    @Override
-//    @GetMapping("/relatorio-usuario-pedido")
-//    public List<UsuarioRelatorioPedidoDTO> listarRelatorioUsuariosPedido(Integer idUsuario) {
-//        return usuarioService.listarRelatorioUsuarioPedido(idUsuario);
-//    }
+    @Override
+    @GetMapping("/relatorio-usuario-pedido")
+    public List<UsuarioRelatorioPedidoDTO> relatorioUsuariosPedido(@RequestParam(required = false)Integer idUsuario) {
+        return usuarioService.listarRelatorioUsuarioPedido(idUsuario);
+    }
 
 //    @Override
 //    @GetMapping("/relatorio-geral-usuario-")
-//    public List<UsuarioRelatorioPedidoDTO> listarRelatorioGeralUsuarios(Integer idUsuario) {
+//    public List<UsuarioRelatorioPedidoDTO> relatorioGeralUsuarios(@RequestParam(required = false)Integer idUsuario) {
 //        return usuarioService.listarRelatorioGeralUsuario(idUsuario);
 //    }
 

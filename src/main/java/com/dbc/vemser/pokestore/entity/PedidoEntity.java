@@ -12,7 +12,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity(name = "PEDIDO")
 public class PedidoEntity {
 
@@ -33,7 +32,7 @@ public class PedidoEntity {
     private Integer idUsuario;
 
     @Column(name = "valor_final")
-    private double valorFinal;
+    private Double valorFinal;
 
     @Column(name = "deletado")
     private String deletado = "F";

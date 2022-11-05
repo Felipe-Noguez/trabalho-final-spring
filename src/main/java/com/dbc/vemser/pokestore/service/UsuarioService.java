@@ -83,9 +83,9 @@ public class UsuarioService {
         );
     }
 
-//    public List<UsuarioRelatorioPedidoDTO> listarRelatorioUsuarioPedido (Integer id) {
-//        return  usuarioRepository.relatorioUsuarioPedido(id);
-//    }
+    public List<UsuarioRelatorioPedidoDTO> listarRelatorioUsuarioPedido (Integer id) {
+        return  usuarioRepository.relatorioUsuarioPedido(id);
+    }
 
 //    public List<UsuarioRelatorioPedidoDTO> listarRelatorioGeralUsuario (Integer id) {
 //        return  usuarioRepository.relatorioGeralUsuario(id);

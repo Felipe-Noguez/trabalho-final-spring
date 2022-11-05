@@ -10,7 +10,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity(name = "USUARIO")
 public class UsuarioEntity {
 

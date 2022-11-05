@@ -12,7 +12,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity(name = "PRODUTO")
 public class ProdutoEntity {
 

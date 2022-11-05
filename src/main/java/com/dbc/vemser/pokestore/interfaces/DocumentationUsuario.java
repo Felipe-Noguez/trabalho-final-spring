@@ -4,6 +4,7 @@ package com.dbc.vemser.pokestore.interfaces;
 import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,16 +29,16 @@ public interface DocumentationUsuario {
     @GetMapping("/usuarios-paginados")
     public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer numeroPaginas);
 
-//    @Operation(summary = "listar usuarios de forma paginada", description = "Lista usuarios de acordo com a paginacao desejada")
-//    @ApiResponses(
-//            value = {
-//                    @ApiResponse(responseCode = "200", description = "Retorna a lista paginada"),
-//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-//            }
-//    )
-//    @GetMapping("/usuarios-paginados")
-//    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer numeroPaginas);
+    @Operation(summary = "Relatório de usuário", description = "Relatório de pedidos do usuarios")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna o relatório de pedido do usuário"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção no relatório")
+            }
+    )
+    @GetMapping("/relatorio-usuario-pedido")
+    public List<UsuarioRelatorioPedidoDTO> relatorioUsuariosPedido(@RequestParam(required = false)Integer idUsuario);
 
 //    @Operation(summary = "listar usuarios de forma paginada", description = "Lista usuarios de acordo com a paginacao desejada")
 //    @ApiResponses(
@@ -48,7 +49,7 @@ public interface DocumentationUsuario {
 //            }
 //    )
 //    @GetMapping("/usuarios-paginados")
-//    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer numeroPaginas);
+//    public List<UsuarioRelatorioPedidoDTO> relatorioGeralUsuarios(@RequestParam(required = false)Integer idUsuario);
 
     @Operation(summary = "listar usuarios", description = "Lista todos os usuarios do banco")
     @ApiResponses(
