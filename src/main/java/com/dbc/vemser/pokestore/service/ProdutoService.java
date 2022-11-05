@@ -53,8 +53,11 @@ public class ProdutoService {
     // leitura
     public List<ProdutoDTO> listarProdutos() {
         return produtoRepository.findAll().stream()
-                .map(produto -> objectMapper.convertValue(produto, ProdutoDTO.class))
-                .toList();
+                .map(produto ->  {
+                    ProdutoDTO produtoDTO = objectMapper.convertValue(produto, ProdutoDTO.class);
+                    produtoDTO.setIdUsuario(produto.getUsuario().getIdUsuario());
+                    return produtoDTO;
+                }).toList();
     }
 
     public ProdutoEntity findById(Integer id) throws RegraDeNegocioException {

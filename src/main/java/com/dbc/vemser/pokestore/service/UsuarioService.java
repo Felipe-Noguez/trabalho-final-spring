@@ -3,6 +3,7 @@ package com.dbc.vemser.pokestore.service;
 import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
@@ -82,6 +83,12 @@ public class UsuarioService {
         );
     }
 
+//    public List<UsuarioRelatorioPedidoDTO> listarRelatorioUsuarioPedido (Integer id) {
+//        return  usuarioRepository.relatorioUsuarioPedido(id);
+//    }
 
+//    public List<UsuarioRelatorioPedidoDTO> listarRelatorioGeralUsuario (Integer id) {
+//        return  usuarioRepository.relatorioGeralUsuario(id);
+//    }
 }
 

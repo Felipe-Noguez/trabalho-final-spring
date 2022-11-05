@@ -2,6 +2,7 @@ package com.dbc.vemser.pokestore.entity;
 
 import com.dbc.vemser.pokestore.enums.Tipos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@Entity(name = "Produto")
+@Entity(name = "PRODUTO")
 public class ProdutoEntity {
 
     @Id
@@ -28,16 +29,13 @@ public class ProdutoEntity {
     private String descricao;
 
     @Column(name = "quantidade")
-    private int quantidade;
+    private Integer quantidade;
 
     @Column(name = "tipo")
-    protected Tipos tipo;
+    private Tipos tipo;
 
     @Column(name = "valor")
-    private double valor;
-
-    @Column(name = "idUsuario")
-    private int idUsuario;
+    private Double valor;
 
     @Column(name = "deletado")
     private String deletado = "F";

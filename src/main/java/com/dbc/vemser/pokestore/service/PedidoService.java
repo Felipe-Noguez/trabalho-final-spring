@@ -54,7 +54,7 @@ public class PedidoService {
 
         pedidoEntity = objectMapper.convertValue(pedidoAtualizar, PedidoEntity.class);
         pedidoEntity.setIdUsuario(usuario.getIdUsuario());
-        pedidoEntity.setIdPedido(id);
+        pedidoEntity.setUsuario(usuario);
         pedidoEntity.setCupom(cupomEntity);
         pedidoEntity.getProdutosPedidos().clear();
 
@@ -69,8 +69,11 @@ public class PedidoService {
 
     public List<PedidoDTO> listarPedido() throws RegraDeNegocioException {
         return pedidoRepository.findAll().stream()
-                .map(pedido -> objectMapper.convertValue(pedido, PedidoDTO.class))
-                .toList();
+                .map(pedido -> {
+                    PedidoDTO pedidoDTO = objectMapper.convertValue(pedido, PedidoDTO.class);
+                    pedidoDTO.setProdutosPedido(getProdutoPedidoDTOList(pedido));
+                    return pedidoDTO;
+                }).toList();
     }
     // remoção
     public void removerPedido(Integer id) throws RegraDeNegocioException {
@@ -115,8 +118,7 @@ public class PedidoService {
                 .map(item -> {
                     ProdutoPedidoDTO produtoPedidoDTO = objectMapper.convertValue(item, ProdutoPedidoDTO.class);
                     produtoPedidoDTO.setProduto(objectMapper.convertValue(item.getProduto(), ProdutoDTO.class));
-                    produtoPedidoDTO.setPedido(objectMapper.convertValue(item.getPedido(), PedidoDTO.class));
-
+                    System.out.println(item);
                     return produtoPedidoDTO;
                 }).toList();
     }

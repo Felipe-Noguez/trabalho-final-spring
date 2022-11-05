@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@Entity(name = "Produto_Pedido")
+@Entity(name = "PRODUTO_PEDIDO")
 public class ProdutoPedidoEntity {
 
     @Id
@@ -20,10 +19,10 @@ public class ProdutoPedidoEntity {
     @Column(name = "id_produto_pedido")
     private Integer idProdutoPedido;
 
-    @Column(name = "id_produto")
+    @Column(name = "id_produto", insertable = false, updatable = false)
     private Integer idProduto;
 
-    @Column(name = "id_pedido")
+    @Column(name = "id_pedido", insertable = false, updatable = false)
     private Integer idPedido;
 
     @Column(name = "quantidade")

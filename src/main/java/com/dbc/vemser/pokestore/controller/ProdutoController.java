@@ -29,8 +29,8 @@ public class ProdutoController implements DocumentationProduto {
 
     @Override
     @GetMapping("/produtos-paginados")
-    public PageDTO<ProdutoDTO> listarProdutosPaginados(Integer pagina, Integer numeroPaginas) {
-        return produtoService.listarProdutosPaginados(pagina, numeroPaginas);
+    public PageDTO<ProdutoDTO> listarProdutosPaginados(Integer pagina, Integer quantidadePorPagina) {
+        return produtoService.listarProdutosPaginados(pagina, quantidadePorPagina);
     }
 
     @Override

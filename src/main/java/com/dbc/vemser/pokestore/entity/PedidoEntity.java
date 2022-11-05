@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@Entity(name = "Pedido")
+@Entity(name = "PEDIDO")
 public class PedidoEntity {
 
     //nao apagar
@@ -26,10 +26,10 @@ public class PedidoEntity {
     @Column(name = "id_pedido")
     private Integer idPedido;
 
-    @Column(name = "id_cupom")
+    @Column(name = "id_cupom", insertable = false, updatable = false)
     private Integer idCupom;
 
-    @Column(name = "id_usuario")
+    @Column(name = "id_usuario", insertable = false, updatable = false)
     private Integer idUsuario;
 
     @Column(name = "valor_final")

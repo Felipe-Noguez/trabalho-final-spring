@@ -1,7 +1,5 @@
 package com.dbc.vemser.pokestore.dto;
 
-import com.dbc.vemser.pokestore.entity.PedidoEntity;
-import com.dbc.vemser.pokestore.entity.ProdutoEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,15 +9,11 @@ import javax.validation.constraints.NotNull;
 public class ProdutoPedidoCreateDTO {
 
     @NotNull
-    @Schema(description = "Id do produto")
-    private Integer idProduto;
+    private Integer idPedido;
+    @NotNull
+    private Integer quantidade;
 
     @NotNull
     @Schema(description = "Produto no pedido")
     private ProdutoDTO produto;
-
-    @NotNull
-    @Schema(description = "Pedido do usuário")
-    private PedidoDTO pedido;
-
 }
