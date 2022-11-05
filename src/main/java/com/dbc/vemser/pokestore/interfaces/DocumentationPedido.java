@@ -35,7 +35,7 @@ public interface DocumentationPedido {
             }
     )
     @PostMapping
-    public ResponseEntity<PedidoDTO> create(@RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<PedidoDTO> create(@RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException;
 
     @Operation(summary = "modificar um pedido selecionado por id", description = "Modifica um pedido no banco")
     @ApiResponses(
@@ -47,7 +47,7 @@ public interface DocumentationPedido {
     )
     @PutMapping("/{idPedido}")
     public ResponseEntity<PedidoDTO> update(@PathVariable("idPedido") Integer id,
-                                            @RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException, BancoDeDadosException;
+                                            @RequestBody @Valid PedidoCreateDTO pedido) throws RegraDeNegocioException;
 
     @Operation(summary = "deletar um pedido selecionado por id", description = "Deleta um pedido no banco")
     @ApiResponses(

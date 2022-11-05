@@ -8,6 +8,7 @@ import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,18 +16,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface DocumentationProduto {
-
-    @Operation(summary = "listar produtos de forma paginada", description = "Lista produtos de acordo com a paginação desejada")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista paginada"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/produtos-paginados")
-    public PageDTO<ProdutoDTO> listarProdutosPaginados(Integer pagina, Integer numeroPaginas);
-
 
     @Operation(summary = "listar produtos", description = "Lista todos os produtos do banco")
     @ApiResponses(
@@ -37,7 +26,7 @@ public interface DocumentationProduto {
             }
     )
     @GetMapping
-    public List<ProdutoDTO> list() throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<PageDTO<ProdutoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "criar novo produto", description = "Criar novo produto no banco")
     @ApiResponses(
@@ -48,7 +37,7 @@ public interface DocumentationProduto {
             }
     )
     @PostMapping
-    public ResponseEntity<ProdutoDTO> create(@RequestBody @Valid ProdutoCreateDTO produto) throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<ProdutoDTO> create(@RequestBody @Valid ProdutoCreateDTO produto) throws RegraDeNegocioException;
 
     @Operation(summary = "modificar um produto selecionado por id", description = "Modifica um produto selecionado")
     @ApiResponses(
@@ -60,7 +49,7 @@ public interface DocumentationProduto {
     )
     @PutMapping("/{idProduto}")
     public ResponseEntity<ProdutoDTO> update(@PathVariable("idProduto") Integer id,
-                                             @RequestBody @Valid ProdutoCreateDTO produtoAtualizar) throws RegraDeNegocioException, BancoDeDadosException;
+                                             @RequestBody @Valid ProdutoCreateDTO produtoAtualizar) throws RegraDeNegocioException;
 
     @Operation(summary = "deletar um produto selecionado por id", description = "Deleta um produto selecionado")
     @ApiResponses(

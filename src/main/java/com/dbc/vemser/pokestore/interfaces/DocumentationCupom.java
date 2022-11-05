@@ -24,7 +24,7 @@ public interface DocumentationCupom {
             }
     )
     @GetMapping// localhost:8080/cupom
-    public ResponseEntity<List<CupomDTO>> list() throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<List<CupomDTO>> list() throws RegraDeNegocioException;
 
     @Operation(summary = "criar novo cupom", description = "Cria novo cupomn")
     @ApiResponses(
@@ -35,7 +35,7 @@ public interface DocumentationCupom {
             }
     )
     @PostMapping// localhost:8080/cupom
-    public ResponseEntity<CupomDTO> create(@RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<CupomDTO> create(@RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException;
 
     @Operation(summary = "modificar um cupom selecionado por id", description = "Modifica um cupom do banco")
     @ApiResponses(
@@ -47,7 +47,7 @@ public interface DocumentationCupom {
     )
     @PutMapping("/{idCupom}")// localhost:8080/cupom/idCupom
     public ResponseEntity<CupomDTO> update(@PathVariable("idCupom") Integer id,
-                                           @RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException, BancoDeDadosException;
+                                           @RequestBody @Valid CupomCreateDTO cupom) throws RegraDeNegocioException;
 
     @Operation(summary = "deletar um cupom selecionado por id", description = "Deleta um cupom do banco")
     @ApiResponses(
@@ -58,7 +58,7 @@ public interface DocumentationCupom {
             }
     )
     @DeleteMapping("/{idCupom}") //localhost:8080/cupom/idCupom
-    public ResponseEntity<CupomDTO> delete(@PathVariable("idCupom") Integer id) throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<CupomDTO> delete(@PathVariable("idCupom") Integer id) throws RegraDeNegocioException;
 
 
 }

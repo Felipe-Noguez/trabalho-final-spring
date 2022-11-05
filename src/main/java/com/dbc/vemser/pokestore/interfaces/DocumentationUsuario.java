@@ -27,7 +27,7 @@ public interface DocumentationUsuario {
             }
     )
     @GetMapping("/usuarios-paginados")
-    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer numeroPaginas);
+    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer tamanho);
 
     @Operation(summary = "Relatório de usuário", description = "Relatório de pedidos do usuarios")
     @ApiResponses(
@@ -60,7 +60,7 @@ public interface DocumentationUsuario {
             }
     )
     @GetMapping// localhost:1521/usuario
-    public ResponseEntity<List<UsuarioDTO>> list() throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<List<UsuarioDTO>> list() throws RegraDeNegocioException;
 
     @Operation(summary = "criar novo usuario", description = "Cria novo usuario no banco")
     @ApiResponses(
@@ -71,7 +71,7 @@ public interface DocumentationUsuario {
             }
     )
     @PostMapping //localhost:1521/usuario
-    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioCreateDTO usuario) throws RegraDeNegocioException,BancoDeDadosException;
+    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioCreateDTO usuario) throws RegraDeNegocioException;
 
     @Operation(summary = "modificar usuario selecionado por id", description = "Modifica um usuario selecionado")
     @ApiResponses(
@@ -84,7 +84,7 @@ public interface DocumentationUsuario {
 
     @PutMapping("/{idUsuario}")
     public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id,
-                                             @RequestBody @Valid UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException, BancoDeDadosException;
+                                             @RequestBody @Valid UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException;
     @Operation(summary = "deletar usuario selecionado por id", description = "Deleta usuario selecionado")
     @ApiResponses(
             value = {
@@ -94,7 +94,7 @@ public interface DocumentationUsuario {
             }
     )
     @DeleteMapping("/{idUsuario}") // localhost:1521/pessoa/10
-    public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException;
 
 
 }

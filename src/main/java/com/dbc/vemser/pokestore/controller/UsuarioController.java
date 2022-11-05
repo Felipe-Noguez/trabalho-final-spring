@@ -32,8 +32,8 @@ public class UsuarioController implements DocumentationUsuario {
 
     @Override
     @GetMapping("/usuarios-paginados")
-    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer quantidadePorPagina) {
-        return usuarioService.listarUsuariosPaginados(pagina, quantidadePorPagina);
+    public PageDTO<UsuarioDTO> listarUsuariosPaginados(Integer pagina, Integer tamanho) {
+        return usuarioService.listarUsuariosPaginados(pagina, tamanho);
     }
 
     @Override

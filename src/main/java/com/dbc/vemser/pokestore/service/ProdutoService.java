@@ -14,9 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -55,35 +57,23 @@ public class ProdutoService {
     }
 
     // leitura
-    public List<ProdutoDTO> listarProdutos() {
-        return produtoRepository.findAll().stream()
+    public PageDTO<ProdutoDTO> listarProdutos(Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+
+        Page<ProdutoEntity> pageEntity = produtoRepository.findAll(pageRequest);
+        List<ProdutoDTO> listDTO = pageEntity.getContent().stream()
                 .map(produto ->  {
                     ProdutoDTO produtoDTO = objectMapper.convertValue(produto, ProdutoDTO.class);
                     produtoDTO.setIdUsuario(produto.getUsuario().getIdUsuario());
                     return produtoDTO;
                 }).toList();
+
+        return new PageDTO<>(pageEntity.getTotalElements(), pageEntity.getTotalPages(), pagina, tamanho, listDTO);
     }
 
     public ProdutoEntity findById(Integer id) throws RegraDeNegocioException {
 
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado!"));
-    }
-
-    public PageDTO<ProdutoDTO> listarProdutosPaginados(Integer pagina, Integer numeroPaginas){
-        PageRequest pageRequest = PageRequest.of(pagina, numeroPaginas);
-        Page<ProdutoEntity> paginaRepository = produtoRepository.findAll(pageRequest);
-        List<ProdutoDTO> produtosDaPagina = paginaRepository.getContent().stream()
-                .map(produto ->  {
-                    ProdutoDTO produtoDTO = objectMapper.convertValue(produto, ProdutoDTO.class);
-                    produtoDTO.setIdUsuario(produto.getUsuario().getIdUsuario());
-                    return produtoDTO;
-                }).toList();
-        return new PageDTO<>(paginaRepository.getTotalElements(),
-                paginaRepository.getTotalPages(),
-                pagina,
-                numeroPaginas,
-                produtosDaPagina
-        );
     }
 }
