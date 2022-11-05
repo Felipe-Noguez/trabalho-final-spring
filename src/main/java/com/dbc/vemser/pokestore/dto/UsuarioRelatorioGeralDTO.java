@@ -25,7 +25,6 @@ public class UsuarioRelatorioGeralDTO {
     private String descricaoProduto;
     private Integer quantidade;
     private Double valorProduto;
-    private Integer idUsuarioProduto;
 
 //    PRODUTO_PEDIDO
     private Integer idProdutoPedido;

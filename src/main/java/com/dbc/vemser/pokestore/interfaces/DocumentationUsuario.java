@@ -1,10 +1,7 @@
 package com.dbc.vemser.pokestore.interfaces;
 
 
-import com.dbc.vemser.pokestore.dto.PageDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO;
+import com.dbc.vemser.pokestore.dto.*;
 import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,18 +35,18 @@ public interface DocumentationUsuario {
             }
     )
     @GetMapping("/relatorio-usuario-pedido")
-    public List<UsuarioRelatorioPedidoDTO> relatorioUsuariosPedido(@RequestParam(required = false)Integer idUsuario);
+    public ResponseEntity<List<UsuarioRelatorioPedidoDTO>> relatorioUsuariosPedido(@RequestParam(required = false)Integer idUsuario);
 
-//    @Operation(summary = "listar usuarios de forma paginada", description = "Lista usuarios de acordo com a paginacao desejada")
-//    @ApiResponses(
-//            value = {
-//                    @ApiResponse(responseCode = "200", description = "Retorna a lista paginada"),
-//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-//            }
-//    )
-//    @GetMapping("/usuarios-paginados")
-//    public List<UsuarioRelatorioPedidoDTO> relatorioGeralUsuarios(@RequestParam(required = false)Integer idUsuario);
+    @Operation(summary = "listar usuarios de forma paginada", description = "Lista usuarios de acordo com a paginacao desejada")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista paginada"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/usuarios-paginados")
+    public ResponseEntity<List<UsuarioRelatorioGeralDTO>> relatorioGeralUsuarios(@RequestParam(required = false)Integer idUsuario);
 
     @Operation(summary = "listar usuarios", description = "Lista todos os usuarios do banco")
     @ApiResponses(
