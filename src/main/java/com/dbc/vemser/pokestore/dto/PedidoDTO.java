@@ -15,5 +15,4 @@ public class PedidoDTO {
     private double valorFinal;
     private Integer idPedido;
     private List<ProdutoPedidoDTO> produtosPedido = new ArrayList<>();
-
 }

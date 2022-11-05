@@ -2,6 +2,7 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.*;
 import com.dbc.vemser.pokestore.entity.*;
+import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.PedidoRepository;
 import com.dbc.vemser.pokestore.repository.ProdutoPedidoRepository;
@@ -22,8 +23,7 @@ public class PedidoService {
     private final ProdutoService produtoService;
     private final UsuarioService usuarioService;
     private final PedidoRepository pedidoRepository;
-
-    private final ProdutoPedidoRepository produtoPedidoRepository;
+    private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
     // criação de um objeto
@@ -41,6 +41,10 @@ public class PedidoService {
         if (cupomEntity != null) {
             pedidoEntity.setValorFinal(pedidoEntity.getValorFinal() - cupomEntity.getValor());
         }
+
+        emailService.sendEmailPedido(objectMapper.convertValue(usuario, UsuarioDTO.class),
+                objectMapper.convertValue(pedidoEntity, PedidoDTO.class),
+                Requisicao.CREATE);
 
         return salvarPedido(pedidoEntity);
     }
@@ -64,6 +68,10 @@ public class PedidoService {
             pedidoEntity.setValorFinal(pedidoEntity.getValorFinal() - cupomEntity.getValor());
         }
 
+        emailService.sendEmailPedido(objectMapper.convertValue(usuario, UsuarioDTO.class),
+                objectMapper.convertValue(pedidoEntity, PedidoDTO.class),
+                Requisicao.UPDATE);
+
         return salvarPedido(pedidoEntity);
     }
 
@@ -78,7 +86,12 @@ public class PedidoService {
     // remoção
     public void removerPedido(Integer id) throws RegraDeNegocioException {
         PedidoEntity pedidoEntity = findById(id);
+        UsuarioEntity usuario = usuarioService.findById(pedidoEntity.getIdUsuario());
         pedidoRepository.delete(pedidoEntity);
+
+        emailService.sendEmailPedido(objectMapper.convertValue(usuario, UsuarioDTO.class),
+                objectMapper.convertValue(pedidoEntity, PedidoDTO.class),
+                Requisicao.DELETE);
     }
 
     public PedidoEntity findById(Integer id) throws RegraDeNegocioException {
@@ -118,7 +131,7 @@ public class PedidoService {
                 .map(item -> {
                     ProdutoPedidoDTO produtoPedidoDTO = objectMapper.convertValue(item, ProdutoPedidoDTO.class);
                     produtoPedidoDTO.setProduto(objectMapper.convertValue(item.getProduto(), ProdutoDTO.class));
-                    System.out.println(item);
+                    produtoPedidoDTO.getProduto().setIdUsuario(item.getProduto().getUsuario().getIdUsuario());
                     return produtoPedidoDTO;
                 }).toList();
     }

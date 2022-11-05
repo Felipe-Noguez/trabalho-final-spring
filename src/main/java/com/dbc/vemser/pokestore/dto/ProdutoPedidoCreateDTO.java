@@ -9,8 +9,6 @@ import javax.validation.constraints.NotNull;
 public class ProdutoPedidoCreateDTO {
 
     @NotNull
-    private Integer idPedido;
-    @NotNull
     private Integer quantidade;
 
     @NotNull

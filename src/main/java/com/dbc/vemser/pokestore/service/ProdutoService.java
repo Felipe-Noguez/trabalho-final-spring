@@ -31,6 +31,7 @@ public class ProdutoService {
 
         ProdutoDTO produtoDTO = objectMapper.convertValue(produtoRepository.save(produtoEntity), ProdutoDTO.class);
         produtoDTO.setIdProduto(produtoCreate.getIdUsuario());
+
         return produtoDTO;
     }
 
