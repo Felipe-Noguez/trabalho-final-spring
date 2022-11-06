@@ -16,10 +16,6 @@ import java.util.Set;
 @Entity(name = "PEDIDO")
 public class PedidoEntity {
 
-    //nao apagar
-//    private List<ProdutoPedidoEntity> produtosPedido = new ArrayList<>();
-//    private CupomEntity cupom;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PEDIDO_SEQ")
     @SequenceGenerator(name = "PEDIDO_SEQ", sequenceName = "SEQ_PEDIDO", allocationSize = 1)
