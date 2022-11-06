@@ -1,6 +1,8 @@
 package com.dbc.vemser.pokestore.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 

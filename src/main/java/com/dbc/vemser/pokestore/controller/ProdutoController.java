@@ -4,20 +4,17 @@ package com.dbc.vemser.pokestore.controller;
 import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoCreateDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoDTO;
-import com.dbc.vemser.pokestore.dto.UsuarioDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.interfaces.DocumentationProduto;
 import com.dbc.vemser.pokestore.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RestController

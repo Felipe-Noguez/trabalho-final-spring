@@ -3,17 +3,14 @@ package com.dbc.vemser.pokestore.interfaces;
 import com.dbc.vemser.pokestore.dto.PageDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoCreateDTO;
 import com.dbc.vemser.pokestore.dto.ProdutoDTO;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 public interface DocumentationProduto {
 

@@ -1,7 +1,6 @@
 package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.PedidoDTO;
-import com.dbc.vemser.pokestore.dto.ProdutoDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
 import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;

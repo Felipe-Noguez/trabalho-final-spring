@@ -2,7 +2,6 @@ package com.dbc.vemser.pokestore.interfaces;
 
 import com.dbc.vemser.pokestore.dto.CupomCreateDTO;
 import com.dbc.vemser.pokestore.dto.CupomDTO;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

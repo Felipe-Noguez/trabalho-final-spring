@@ -2,7 +2,6 @@ package com.dbc.vemser.pokestore.controller;
 
 import com.dbc.vemser.pokestore.dto.PedidoCreateDTO;
 import com.dbc.vemser.pokestore.dto.PedidoDTO;
-import com.dbc.vemser.pokestore.exceptions.BancoDeDadosException;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.interfaces.DocumentationPedido;
 import com.dbc.vemser.pokestore.service.PedidoService;

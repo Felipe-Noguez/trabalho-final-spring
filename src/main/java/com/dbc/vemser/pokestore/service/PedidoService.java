@@ -5,7 +5,6 @@ import com.dbc.vemser.pokestore.entity.*;
 import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.PedidoRepository;
-import com.dbc.vemser.pokestore.repository.ProdutoPedidoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
