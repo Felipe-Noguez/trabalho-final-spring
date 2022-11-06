@@ -58,7 +58,7 @@ public class EmailService {
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(pessoaDTO.getEmail());
             mimeMessageHelper.setSubject("subject");
-            mimeMessageHelper.setText(geContentFromTemplate(pessoaDTO, requisicao), true);
+            mimeMessageHelper.setText(geContentFromTemplatePedido(pessoaDTO, pedidoDTO, requisicao), true);
             emailSender.send(mimeMessageHelper.getMimeMessage());
 
         } catch (MessagingException | IOException | TemplateException e) {
@@ -66,6 +66,34 @@ public class EmailService {
         } catch (RegraDeNegocioException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String geContentFromTemplate(UsuarioDTO usuarioDTO, Requisicao requisicao) throws IOException, TemplateException, RegraDeNegocioException {
+        Map<String, Object> dados = new HashMap<>();
+        Template template = null;
+        dados.put("nome", usuarioDTO.getNome());
+        dados.put("email", from);
+        dados.put("id", usuarioDTO.getIdUsuario());
+        dados.put("pix", usuarioDTO.getPix());
+
+        switch(requisicao){
+            case CREATE -> {
+                template = fmConfiguration.getTemplate("email-template.html");
+            }
+            case UPDATE -> {
+                template = fmConfiguration.getTemplate("email-template-atualizar.html");
+                dados.put("telefone", usuarioDTO.getTelefone());
+            }
+            case DELETE -> {
+                template = fmConfiguration.getTemplate("email-template-excluir.html");
+            }
+
+            default ->  {
+                throw new RegraDeNegocioException("Erro");
+            }
+        }
+
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
 
     public String geContentFromTemplatePedido(UsuarioDTO usuarioDTO, PedidoDTO pedidoDTO ,Requisicao requisicao) throws IOException, TemplateException, RegraDeNegocioException {
@@ -79,7 +107,7 @@ public class EmailService {
         switch(requisicao){
             case CREATE -> {
                 dados.put("corpo", "<br>Pedido realixado com sucesso" +
-                                    "<br>Abaixo está as informações do seu pedido:");
+                        "<br>Abaixo está as informações do seu pedido:");
             }
             case UPDATE -> {
                 dados.put("corpo", "Seu pedido foi Atualizado" +
@@ -96,32 +124,6 @@ public class EmailService {
         }
 
         template = fmConfiguration.getTemplate("email-pedido-template.html");
-        return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-    }
-
-    public String geContentFromTemplate(UsuarioDTO usuarioDTO, Requisicao requisicao) throws IOException, TemplateException, RegraDeNegocioException {
-        Map<String, Object> dados = new HashMap<>();
-        Template template = null;
-        dados.put("nome", usuarioDTO.getNome());
-        dados.put("email", from);
-        dados.put("id", usuarioDTO.getIdUsuario());
-
-        switch(requisicao){
-            case CREATE -> {
-                template = fmConfiguration.getTemplate("email-template.html");
-            }
-            case UPDATE -> {
-                template = fmConfiguration.getTemplate("email-template-atualizar.html");
-            }
-            case DELETE -> {
-                template = fmConfiguration.getTemplate("email-template-excluir.html");
-            }
-
-            default ->  {
-                throw new RegraDeNegocioException("Erro");
-            }
-        }
-
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
 }

@@ -33,14 +33,6 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    // remoção
-    public void remover(Integer id) throws RegraDeNegocioException {
-
-        UsuarioEntity usuarioEncontrado = findById(id);
-        emailService.sendEmailUsuario(objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class), Requisicao.DELETE);
-        usuarioRepository.delete(usuarioEncontrado);
-    }
-
     // atualização de um objeto
     public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException {
 
@@ -50,7 +42,17 @@ public class UsuarioService {
         usuarioEncontrado.setIdUsuario(id);
 
         usuarioEncontrado = usuarioRepository.save(usuarioEncontrado);
+        emailService.sendEmailUsuario(objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class), Requisicao.UPDATE);
+
         return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
+    }
+
+    // remoção
+    public void remover(Integer id) throws RegraDeNegocioException {
+
+        UsuarioEntity usuarioEncontrado = findById(id);
+        emailService.sendEmailUsuario(objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class), Requisicao.DELETE);
+        usuarioRepository.delete(usuarioEncontrado);
     }
 
     // leitura
