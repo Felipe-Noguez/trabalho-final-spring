@@ -41,7 +41,7 @@ public class ProdutoPedidoEntity {
     private ProdutoEntity produto;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
     @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
     private PedidoEntity pedido;
 

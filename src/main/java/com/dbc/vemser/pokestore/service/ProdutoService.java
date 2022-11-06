@@ -30,7 +30,7 @@ public class ProdutoService {
         produtoEntity.setUsuario(usuarioService.findById(produtoCreate.getIdUsuario()));
 
         ProdutoDTO produtoDTO = objectMapper.convertValue(produtoRepository.save(produtoEntity), ProdutoDTO.class);
-        produtoDTO.setIdProduto(produtoCreate.getIdUsuario());
+        produtoDTO.setIdProduto(produtoEntity.getUsuario().getIdUsuario());
 
         return produtoDTO;
     }

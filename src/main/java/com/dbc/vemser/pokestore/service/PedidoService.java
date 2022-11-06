@@ -5,6 +5,7 @@ import com.dbc.vemser.pokestore.entity.*;
 import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.PedidoRepository;
+import com.dbc.vemser.pokestore.repository.ProdutoPedidoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,8 @@ public class PedidoService {
     private final ProdutoService produtoService;
     private final UsuarioService usuarioService;
     private final PedidoRepository pedidoRepository;
+
+    private final ProdutoPedidoRepository produtoPedidoRepository;
     private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
@@ -33,7 +36,8 @@ public class PedidoService {
 
         PedidoEntity pedidoEntity = objectMapper.convertValue(pedido, PedidoEntity.class);
         pedidoEntity.setCupom(cupomEntity);
-        pedidoEntity.setIdUsuario(usuario.getIdUsuario());
+        pedidoEntity.setIdUsuario(pedido.getIdUsuario());
+        pedidoEntity.setUsuario(usuario);
 
         adicionarPedido(pedido, pedidoEntity);
 
@@ -109,17 +113,24 @@ public class PedidoService {
     }
 
     private void adicionarPedido(PedidoCreateDTO pedido, PedidoEntity pedidoEntity) throws RegraDeNegocioException {
+
         for (ProdutoIdQuantidadeCreateDTO item : pedido.getProdutosDTO()) {
             ProdutoEntity produtoEntity = produtoService.findById(item.getIdProduto());
 
             //adicionar um produtoPedido na lista do pedidoEntity -> List<pedidoProdutoEntity>
             ProdutoPedidoEntity produtoPedido = new ProdutoPedidoEntity();
             produtoPedido.setProduto(produtoEntity);
+            produtoPedido.setIdProduto(produtoEntity.getIdProduto());
             produtoPedido.setQuantidade(item.getQuantidade());
             produtoPedido.setPedido(pedidoEntity);
+            produtoPedido.setIdPedido(pedidoEntity.getIdPedido());
             produtoPedido.setValor(produtoEntity.getValor() * item.getQuantidade());
 
+            produtoEntity.getProdutosPedidos().add(produtoPedido);
             pedidoEntity.getProdutosPedidos().add(produtoPedido);
+
+            produtoPedido = produtoPedidoRepository.save(produtoPedido);
+
             pedidoEntity.setValorFinal(pedidoEntity.getValorFinal() + produtoPedido.getValor());
         }
     }
@@ -143,6 +154,7 @@ public class PedidoService {
         List<ProdutoPedidoDTO> produtoPedidoDTOList = getProdutoPedidoDTOList(pedidoEntity);
         PedidoDTO pedidoDTO = objectMapper.convertValue(pedidoEntity, PedidoDTO.class);
         pedidoDTO.setProdutosPedido(produtoPedidoDTOList);
+        pedidoDTO.setIdPedido(pedidoEntity.getIdPedido());
 
         return pedidoDTO;
     }
