@@ -2,6 +2,7 @@ package com.dbc.vemser.pokestore.entity;
 
 import com.dbc.vemser.pokestore.enums.Tipos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
