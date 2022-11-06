@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class PedidoDTO {
 
-    private double valorFinal;
+    private Double valorFinal;
     private Integer idPedido;
     private List<ProdutoPedidoDTO> produtosPedido = new ArrayList<>();
 }
