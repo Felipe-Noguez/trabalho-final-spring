@@ -1,6 +1,7 @@
 package com.dbc.vemser.pokestore.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "PRODUTO_PEDIDO")
 public class ProdutoPedidoEntity {
 
@@ -31,7 +33,7 @@ public class ProdutoPedidoEntity {
     private Double valor;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_produto", referencedColumnName = "id_produto")
     private ProdutoEntity produto;
 
