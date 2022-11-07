@@ -114,7 +114,7 @@ public class EmailService {
                         "<br>Aguardando pagamentoa:");
             }
             case DELETE -> {
-                dados.put("corpo", "Seu pedido foi deletado " +
+                dados.put("corpo", "Seu pedido foi deletado. " +
                         "Ficamos triste com sua decisão, nos conte o que podemos melhorar.");
             }
 
