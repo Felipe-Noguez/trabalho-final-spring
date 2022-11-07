@@ -106,7 +106,7 @@ public class EmailService {
 
         switch(requisicao){
             case CREATE -> {
-                dados.put("corpo", "<br>Pedido realixado com sucesso" +
+                dados.put("corpo", "<br>Pedido realizado com sucesso" +
                         "<br>Abaixo está as informações do seu pedido:");
             }
             case UPDATE -> {
