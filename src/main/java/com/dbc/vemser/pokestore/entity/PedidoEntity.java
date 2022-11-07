@@ -45,6 +45,6 @@ public class PedidoEntity {
     private CupomEntity cupom;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ProdutoPedidoEntity> produtosPedidos = new HashSet<>();
 }
