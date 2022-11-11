@@ -10,9 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,15 +24,18 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
     private final ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
 
     // criação de um objeto
     public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuario){
 
         UsuarioEntity usuarioEntity = objectMapper.convertValue(usuario, UsuarioEntity.class);
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        usuarioEntity.setSenha(senhaCriptografada);
         usuarioEntity = usuarioRepository.save(usuarioEntity);
 
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
+//        emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
         return usuarioDTO;
     }
 
@@ -77,6 +83,23 @@ public class UsuarioService {
     public UsuarioEntity findById(Integer id) throws RegraDeNegocioException {
         return usuarioRepository.findById(id).orElseThrow(
                 () -> new RegraDeNegocioException("Usuario não encontrado!"));
+    }
+
+    public Integer getIdLoggedUser() {
+        Integer findUserId = Integer.parseInt((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return findUserId;
+    }
+
+    public UsuarioEntity getLoggedUser() throws RegraDeNegocioException {
+        return findById(getIdLoggedUser());
+    }
+
+    public Optional<UsuarioEntity> findByEmailAndSenha(String login, String senha) {
+        return usuarioRepository.findByEmailAndSenha(login, senha);
+    }
+
+    public Optional<UsuarioEntity> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }
 

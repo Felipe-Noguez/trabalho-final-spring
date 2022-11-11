@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
@@ -51,5 +52,8 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             " where (:idUsuario is null or u.idUsuario = : idUsuario) ")
     List<UsuarioRelatorioGeralDTO> relatorioGeralUsuario(Integer idUsuario);
 
+    Optional<UsuarioEntity> findByEmailAndSenha(String email, String senha);
+
+    Optional<UsuarioEntity> findByEmail(String email);
 
 }

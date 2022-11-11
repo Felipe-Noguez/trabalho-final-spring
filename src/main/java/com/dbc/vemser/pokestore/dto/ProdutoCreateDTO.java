@@ -2,7 +2,6 @@ package com.dbc.vemser.pokestore.dto;
 
 import com.dbc.vemser.pokestore.enums.Tipos;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
