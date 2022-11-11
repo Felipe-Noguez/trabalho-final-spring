@@ -30,7 +30,7 @@ public class UsuarioController implements DocumentationUsuario {
     }
 
     @Override
-    @GetMapping("/relatorio-geral-usuario-")
+    @GetMapping("/relatorio-geral-usuario")
     public ResponseEntity<List<UsuarioRelatorioGeralDTO>> relatorioGeralUsuarios(@RequestParam(required = false)Integer idUsuario) {
         return new ResponseEntity<>(usuarioService.listarRelatorioGeralUsuario(idUsuario), HttpStatus.OK);
     }
@@ -44,10 +44,9 @@ public class UsuarioController implements DocumentationUsuario {
     @Override
     @PostMapping //localhost:1521/usuario
     public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+
         log.info("Criando usuario novo....");
-
         UsuarioDTO usuarioDTO = usuarioService.adicionarUsuario(usuario);
-
         log.info("Usuario criado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
@@ -74,6 +73,16 @@ public class UsuarioController implements DocumentationUsuario {
         log.info("Deletado com sucesso!");
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{idUsuario}/desativacao")
+    public ResponseEntity<UsuarioDTO> desativarUsuario(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException {
+        log.info("Desativando usuário....");
+        UsuarioDTO usuarioDTO = usuarioService.desativarUsuario(id);
+        log.info("Usuário desativado com sucesso!");
+
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+
     }
 
 }

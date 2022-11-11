@@ -23,7 +23,6 @@ public class PedidoService {
     private final ProdutoService produtoService;
     private final UsuarioService usuarioService;
     private final PedidoRepository pedidoRepository;
-
     private final ProdutoPedidoRepository produtoPedidoRepository;
     private final EmailService emailService;
     private final ObjectMapper objectMapper;

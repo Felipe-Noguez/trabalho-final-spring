@@ -48,5 +48,4 @@ public class UsuarioCreateDTO {
     @Size(max = 12)
     @Schema(description = "Telefone do usuario")
     private String telefone;
-
 }

@@ -1,22 +1,21 @@
 package com.dbc.vemser.pokestore.security;
 
-import com.dbc.vemser.pokestore.entity.Cargo;
+import com.dbc.vemser.pokestore.dto.LoginDTO;
+import com.dbc.vemser.pokestore.entity.CargoEntity;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,21 +25,20 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.duracao.token}")
-    private String duracaoToken;
+    @Value("${jwt.duracaotoken}")
+    private String duracao;
 
     public String getToken(UsuarioEntity usuarioEntity) {
-        // FIXME por meio do usuário, gerar um token        OK
-        LocalDate agoraLocalDate = LocalDate.now();
-        Date dataAgora = Date.from(agoraLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        LocalDate duraçãoLocalDate = LocalDate.now().plusDays(Long.parseLong(duracaoToken));
-        Date duracaoToken = Date.from(duraçãoLocalDate.atStartOfDay((ZoneId.systemDefault())).toInstant());
+        // por meio do usuário, gerar um token        OK
+
+        Date dataAgora = new Date();
+        Date duracaoToken = new Date(dataAgora.getTime() + Long.parseLong(duracao));
 
         List<String> cargoUsuario = usuarioEntity.getCargos().stream()
-                .map(Cargo::getAuthority)
+                .map(CargoEntity::getAuthority)
                 .toList();
 
-        String jwtToken = Jwts.builder()
+        return Jwts.builder()
                 .setIssuer("vemser-api-noguez")
                 .claim(Claims.ID, usuarioEntity.getIdUsuario().toString())
                 .claim(CHAVE_CARGOS, cargoUsuario)
@@ -48,35 +46,39 @@ public class TokenService {
                 .setExpiration(duracaoToken)
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
-
-        return jwtToken;
     }
 
     public UsernamePasswordAuthenticationToken isValid(String token) {
-        // FIXME validar se o token é válido e retornar o usuário se for válido     OK
         if(token == null) {
             return null;
         }
-//        token = token.replace("Bearer ", "");
 
-        Claims chaves = Jwts.parser()
+        Claims corpo = Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token.replace("Bearer ", ""))
                 .getBody();
-                                  //jti = ID
-        String userId = chaves.get(Claims.ID, String.class);
-        List<String> cargos = chaves.get(CHAVE_CARGOS, List.class);
+
+
+        String userId = corpo.get(Claims.ID, String.class);
+        List<String> cargos = corpo.get(CHAVE_CARGOS, List.class);
 
         List<SimpleGrantedAuthority> listCargos = cargos.stream()
-                .map(simpleGA -> {
-                    return new SimpleGrantedAuthority(simpleGA);
-                })
+                .map(SimpleGrantedAuthority::new)
                 .toList();
 
-        UsernamePasswordAuthenticationToken tokenObject = new UsernamePasswordAuthenticationToken(userId,
-                null,
-                listCargos);
+        return new UsernamePasswordAuthenticationToken(userId, null, listCargos);
+    }
 
-        return tokenObject;
+    public String autenticarAcesso(LoginDTO loginDTO, AuthenticationManager authenticationManager) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getLogin(),
+                        loginDTO.getSenha()
+                );
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+        Object principal = authentication.getPrincipal();
+        UsuarioEntity usuarioEntity = (UsuarioEntity) principal;
+        return getToken(usuarioEntity);
     }
 }

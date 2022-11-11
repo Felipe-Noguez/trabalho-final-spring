@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -55,6 +55,9 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "telefone")
     private String telefone;
 
+    @Column(name = "status")
+    private char contaStatus;
+
     @JsonIgnore
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ProdutoEntity> produtos;
@@ -70,7 +73,7 @@ public class UsuarioEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_cargo")
     )
-    private Set<Cargo> cargos;
+    private Set<CargoEntity> cargos = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -104,7 +107,7 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return contaStatus == '1';
     }
 }
 

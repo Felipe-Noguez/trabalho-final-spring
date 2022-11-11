@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -30,11 +29,13 @@ public class SecurityConfiguration {
                 .and().cors()
                 .and().csrf().disable()
                 .authorizeHttpRequests((authz) ->
-                        authz.antMatchers("/auth/**").permitAll()
+                        authz.antMatchers("/login", "/login/esqueci-senha").permitAll()
+                                .antMatchers("/login/trocar-senha").hasAnyRole("CLIENTE","VENDEDOR","ADMIN")
                                 .antMatchers("/**").hasRole("ADMIN")
                                 .antMatchers("/pedido/**").hasRole("CLIENTE")
                                 .antMatchers(HttpMethod.GET,"/cupom", "/produto").hasAnyRole("CLIENTE", "VENDEDOR")
                                 .antMatchers("/produto/**").hasRole("VENDEDOR")
+                                .antMatchers("/console-admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);

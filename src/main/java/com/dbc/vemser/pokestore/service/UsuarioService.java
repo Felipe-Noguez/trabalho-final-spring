@@ -1,13 +1,17 @@
 package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.*;
+import com.dbc.vemser.pokestore.entity.CargoEntity;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
+import com.dbc.vemser.pokestore.repository.CargoRepository;
 import com.dbc.vemser.pokestore.repository.UsuarioRepository;
+import com.dbc.vemser.pokestore.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,17 +31,25 @@ public class UsuarioService {
     private final EmailService emailService;
     private final ObjectMapper objectMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CargoRepository cargoRepository;
+    private final TokenService tokenService;
 
     // criação de um objeto
-    public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuario){
+    public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, UsuarioEntity.class);
 
-        UsuarioEntity usuarioEntity = objectMapper.convertValue(usuario, UsuarioEntity.class);
-        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        CargoEntity cargo = findCargosByNome("ROLE_CLIENTE");
+        usuarioEntity.getCargos().add(cargo);
+
+        String senhaCriptografada = passwordEncoder.encode(usuarioCreateDTO.getSenha());
         usuarioEntity.setSenha(senhaCriptografada);
+
         usuarioEntity = usuarioRepository.save(usuarioEntity);
 
+        //        emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
+
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-//        emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
+        usuarioDTO.getCargos().add(objectMapper.convertValue(cargo, CargoDto.class));
         return usuarioDTO;
     }
 
@@ -53,6 +67,47 @@ public class UsuarioService {
         return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
     }
 
+    //atualiza cargos
+    public UsuarioDTO atualizarCargos(UsuarioCargosDTO usuarioCargosDTO) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = findById(usuarioCargosDTO.getIdUsuario());
+
+        Set<CargoEntity> cargos = usuarioCargosDTO.getCargos().stream()
+                .map(x -> {
+                    try {
+                        return findCargosByNome(x.getNome());
+                    } catch (RegraDeNegocioException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toSet());
+
+        usuarioEntity.setCargos(cargos);
+        usuarioRepository.save(usuarioEntity);
+
+        return getUsuarioDTO(usuarioEntity);
+    }
+
+    //enviar email para recuprar senha
+    public String enviaEmailParaRecuperarSenha(String email) throws RegraDeNegocioException {
+        UsuarioEntity usuario = findByEmail(email);
+
+        String token = tokenService.getToken(usuario);
+        emailService.sendEmailRecuperarSenha(usuario, token);
+
+        return "Verifique seu email para trocar a senha.";
+    }
+
+    public String atualizaSenha(String senha) throws RegraDeNegocioException {
+        UsuarioEntity usuario = findById(getIdLoggedUser());
+
+        String senhaCriptografada = passwordEncoder.encode(senha);
+        usuario.setSenha(senhaCriptografada);
+        usuarioRepository.save(usuario);
+
+        return "Senha alterada com sucesso";
+    }
+
+
     // remoção
     public void remover(Integer id) throws RegraDeNegocioException {
 
@@ -65,11 +120,22 @@ public class UsuarioService {
     public PageDTO<UsuarioDTO> listar(Integer pagina, Integer tamanho){
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<UsuarioEntity> paginaRepository = usuarioRepository.findAll(pageRequest);
+
         List<UsuarioDTO> usuariosDaPagina = paginaRepository.getContent().stream()
-                .map(usuarioEntity -> objectMapper.convertValue(usuarioEntity, UsuarioDTO.class))
+                .map(this::getUsuarioDTO)
                 .toList();
 
         return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, usuariosDaPagina);
+    }
+
+    @NotNull
+    private UsuarioDTO getUsuarioDTO(UsuarioEntity usuarioEntity) {
+        UsuarioDTO dto = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        dto.setCargos(usuarioEntity.getCargos().stream()
+                .map(x -> objectMapper.convertValue(x, CargoDto.class))
+                .toList());
+
+        return dto;
     }
 
     public List<UsuarioRelatorioPedidoDTO> listarRelatorioUsuarioPedido (Integer id) {
@@ -86,20 +152,34 @@ public class UsuarioService {
     }
 
     public Integer getIdLoggedUser() {
-        Integer findUserId = Integer.parseInt((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return findUserId;
+        return Integer.parseInt((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
-    public UsuarioEntity getLoggedUser() throws RegraDeNegocioException {
-        return findById(getIdLoggedUser());
+    public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
+        return getUsuarioDTO(findById(getIdLoggedUser()));
     }
 
     public Optional<UsuarioEntity> findByEmailAndSenha(String login, String senha) {
         return usuarioRepository.findByEmailAndSenha(login, senha);
     }
 
-    public Optional<UsuarioEntity> findByEmail(String email) {
-        return usuarioRepository.findByEmail(email);
+    public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado"));
     }
+
+    private CargoEntity findCargosByNome(String nome) throws RegraDeNegocioException {
+        return cargoRepository.findByNome(nome)
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+    }
+
+    public UsuarioDTO desativarUsuario (Integer idUsuario) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = findById(idUsuario);
+        usuarioEntity.setContaStatus('0');
+        usuarioRepository.save(usuarioEntity);
+
+        return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+    }
+
 }
 

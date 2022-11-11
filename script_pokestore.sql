@@ -21,6 +21,7 @@ CREATE TABLE USUARIO (
                          CIDADE VARCHAR2(255) NOT NULL,
                          ESTADO VARCHAR2(50) NOT NULL,
                          TELEFONE CHAR(11) NOT NULL,
+                         STATUS CHAR(1) NOT NULL,
                          PRIMARY KEY (ID_USUARIO),
                          UNIQUE (PIX, EMAIL,CPF)
 );

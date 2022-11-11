@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "CARGO")
-public class Cargo implements GrantedAuthority {
+public class CargoEntity implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CARGO_SEQUENCIA")
@@ -26,7 +26,6 @@ public class Cargo implements GrantedAuthority {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cargos")
     private Set<UsuarioEntity> usuarios;
-
 
     @Override
     public String getAuthority() {

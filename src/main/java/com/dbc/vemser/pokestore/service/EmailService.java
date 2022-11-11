@@ -2,6 +2,7 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.PedidoDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
+import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.enums.Requisicao;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import freemarker.template.Template;
@@ -68,6 +69,23 @@ public class EmailService {
         }
     }
 
+    public void sendEmailRecuperarSenha(UsuarioEntity usuarioEntity, String token) {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(usuarioEntity.getEmail());
+            mimeMessageHelper.setSubject("subject");
+            mimeMessageHelper.setText(geContentFromRecuperarSenha(usuarioEntity, token), true);
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String geContentFromTemplate(UsuarioDTO usuarioDTO, Requisicao requisicao) throws IOException, TemplateException, RegraDeNegocioException {
         Map<String, Object> dados = new HashMap<>();
         Template template = null;
@@ -124,6 +142,18 @@ public class EmailService {
         }
 
         template = fmConfiguration.getTemplate("email-pedido-template.html");
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
+    }
+
+    public String geContentFromRecuperarSenha(UsuarioEntity usuarioEntity ,String token) throws IOException, TemplateException {
+        Map<String, Object> dados = new HashMap<>();
+        Template template = null;
+
+        dados.put("nome", usuarioEntity.getNome());
+        dados.put("email", from);
+        dados.put("token", token);
+
+        template = fmConfiguration.getTemplate("email-recuperar-senha-template.html");
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
 }
