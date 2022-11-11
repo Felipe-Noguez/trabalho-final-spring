@@ -3,15 +3,16 @@ package com.dbc.vemser.pokestore.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Getter
 @Setter
-@Table(name = "CARGO")
 @Entity
-public class Cargo {
+@Table(name = "CARGO")
+public class Cargo implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CARGO_SEQUENCIA")
@@ -27,4 +28,8 @@ public class Cargo {
     private Set<UsuarioEntity> usuarios;
 
 
+    @Override
+    public String getAuthority() {
+        return nome;
+    }
 }
