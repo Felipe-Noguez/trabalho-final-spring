@@ -7,12 +7,10 @@ import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -29,5 +27,15 @@ public class ConsoleAdminController {
     public ResponseEntity<UsuarioDTO> atualizarCargos(@RequestBody @Valid UsuarioCargosDTO usuarioCargosDTO) throws RegraDeNegocioException {
         log.info("Atualizando . . .");
         return ResponseEntity.ok(usuarioService.atualizarCargos(usuarioCargosDTO));
+    }
+
+    @PutMapping("/{idUsuario}/desativacao")
+    public ResponseEntity<UsuarioDTO> desativarUsuario(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException {
+        log.info("Desativando usuário....");
+        UsuarioDTO usuarioDTO = usuarioService.desativarUsuario(id);
+        log.info("Usuário desativado com sucesso!");
+
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+
     }
 }

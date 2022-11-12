@@ -43,6 +43,7 @@ public class UsuarioService {
 
         String senhaCriptografada = passwordEncoder.encode(usuarioCreateDTO.getSenha());
         usuarioEntity.setSenha(senhaCriptografada);
+        usuarioEntity.setContaStatus('1');
 
         usuarioEntity = usuarioRepository.save(usuarioEntity);
 
@@ -54,17 +55,32 @@ public class UsuarioService {
     }
 
     // atualização de um objeto
-    public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException {
+    public UsuarioDTO editar(UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEncontrado = findById(getIdLoggedUser());
 
-        UsuarioEntity usuarioEncontrado = findById(id);
+        UsuarioEntity usuarioEntityAtualizar = objectMapper.convertValue(usuarioAtualizar, UsuarioEntity.class);
+        usuarioEntityAtualizar.setIdUsuario(usuarioEncontrado.getIdUsuario());
+        usuarioEntityAtualizar.setCargos(usuarioEncontrado.getCargos());
 
-        usuarioEncontrado = objectMapper.convertValue(usuarioAtualizar, UsuarioEntity.class);
-        usuarioEncontrado.setIdUsuario(id);
+        String senhaCriptografada = passwordEncoder.encode(usuarioAtualizar.getSenha());
+        usuarioEntityAtualizar.setSenha(senhaCriptografada);
 
-        usuarioEncontrado = usuarioRepository.save(usuarioEncontrado);
-        emailService.sendEmailUsuario(objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class), Requisicao.UPDATE);
+        usuarioEntityAtualizar = usuarioRepository.save(usuarioEntityAtualizar);
+        emailService.sendEmailUsuario(objectMapper.convertValue(usuarioEntityAtualizar, UsuarioDTO.class), Requisicao.UPDATE);
 
-        return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
+        List<CargoDto> cargos = usuarioEntityAtualizar.getCargos().stream()
+                .map(x -> {
+                    try {
+                        return objectMapper.convertValue(findCargosByNome(x.getNome()), CargoDto.class);
+                    } catch (RegraDeNegocioException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+
+        UsuarioDTO usuarioDTO =  objectMapper.convertValue(usuarioEntityAtualizar, UsuarioDTO.class);
+        usuarioDTO.setCargos(cargos);
+        return usuarioDTO;
     }
 
     //atualiza cargos
@@ -181,5 +197,24 @@ public class UsuarioService {
         return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
     }
 
+    public UsuarioDTO desativarConta () throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = findById(getIdLoggedUser());
+        usuarioEntity.setContaStatus('0');
+        usuarioRepository.save(usuarioEntity);
+
+        List<CargoDto> cargos = usuarioEntity.getCargos().stream()
+                .map(x -> {
+                    try {
+                        return objectMapper.convertValue(findCargosByNome(x.getNome()), CargoDto.class);
+                    } catch (RegraDeNegocioException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
+
+        UsuarioDTO usuarioDTO =  objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        usuarioDTO.setCargos(cargos);
+        return usuarioDTO;
+    }
 }
 

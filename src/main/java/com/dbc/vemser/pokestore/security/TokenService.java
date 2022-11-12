@@ -39,7 +39,7 @@ public class TokenService {
                 .toList();
 
         return Jwts.builder()
-                .setIssuer("vemser-api-noguez")
+                .setIssuer("pokestore")
                 .claim(Claims.ID, usuarioEntity.getIdUsuario().toString())
                 .claim(CHAVE_CARGOS, cargoUsuario)
                 .setIssuedAt(dataAgora)

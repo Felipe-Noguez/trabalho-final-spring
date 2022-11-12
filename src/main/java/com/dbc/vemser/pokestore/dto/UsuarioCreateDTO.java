@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class UsuarioCreateDTO {
 
     @Email
-    @Schema(description = "Email do usuario")
+    @Schema(description = "Email do usuario", example = "@mail")
     private String email;
 
     @NotNull
@@ -20,11 +20,11 @@ public class UsuarioCreateDTO {
     private String senha;
 
     @NotNull
-    @Schema(description = "Pix do usuario")
+    @Schema(description = "Pix do usuario",example = "1234564567")
     private String pix;
 
     @NotNull
-    @Schema(description = "Nome do usuario")
+    @Schema(description = "Nome do usuario", example = "Mangini")
     private String nome;
 
     @NotNull
@@ -32,7 +32,7 @@ public class UsuarioCreateDTO {
     private String endereco;
 
     @CPF
-    @Schema(description = "CPF do usuario")
+    @Schema(description = "CPF do usuario", example = "99988855521")
     private String cpf;
 
     @NotNull
@@ -46,6 +46,6 @@ public class UsuarioCreateDTO {
 
     @NotNull
     @Size(max = 12)
-    @Schema(description = "Telefone do usuario")
+    @Schema(description = "Telefone do usuario", example = "519874513")
     private String telefone;
 }
