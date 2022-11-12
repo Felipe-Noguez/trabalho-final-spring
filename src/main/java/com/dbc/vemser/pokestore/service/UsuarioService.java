@@ -107,7 +107,7 @@ public class UsuarioService {
     public String enviaEmailParaRecuperarSenha(String email) throws RegraDeNegocioException {
         UsuarioEntity usuario = findByEmail(email);
 
-        String token = tokenService.getToken(usuario);
+        String token = tokenService.getTokenRecuperarSenha(usuario);
         emailService.sendEmailRecuperarSenha(usuario, token);
 
         return "Verifique seu email para trocar a senha.";
@@ -122,7 +122,6 @@ public class UsuarioService {
 
         return "Senha alterada com sucesso";
     }
-
 
     // remoção
     public void remover(Integer id) throws RegraDeNegocioException {

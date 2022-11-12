@@ -24,15 +24,36 @@ public class TokenService {
     private static final String CHAVE_CARGOS = "CARGOS";
     @Value("${jwt.secret}")
     private String secret;
-
     @Value("${jwt.duracaotoken}")
     private String duracao;
+
+    @Value("${jwt.duracaotokensenha}")
+    private String duracaoTokenSenha;
 
     public String getToken(UsuarioEntity usuarioEntity) {
         // por meio do usuário, gerar um token        OK
 
         Date dataAgora = new Date();
         Date duracaoToken = new Date(dataAgora.getTime() + Long.parseLong(duracao));
+
+        List<String> cargoUsuario = usuarioEntity.getCargos().stream()
+                .map(CargoEntity::getAuthority)
+                .toList();
+
+        return Jwts.builder()
+                .setIssuer("pokestore")
+                .claim(Claims.ID, usuarioEntity.getIdUsuario().toString())
+                .claim(CHAVE_CARGOS, cargoUsuario)
+                .setIssuedAt(dataAgora)
+                .setExpiration(duracaoToken)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
+    public String getTokenRecuperarSenha(UsuarioEntity usuarioEntity) {
+
+        Date dataAgora = new Date();
+        Date duracaoToken = new Date(dataAgora.getTime() + Long.parseLong(duracaoTokenSenha));
 
         List<String> cargoUsuario = usuarioEntity.getCargos().stream()
                 .map(CargoEntity::getAuthority)
