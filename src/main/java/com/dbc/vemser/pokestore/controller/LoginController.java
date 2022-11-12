@@ -58,4 +58,14 @@ public class LoginController {
     public ResponseEntity<UsuarioDTO> verificarLogin() throws RegraDeNegocioException {
         return ResponseEntity.ok(usuarioService.getLoggedUser());
     }
+
+    @PutMapping("/atualizar-cadastro")
+    public ResponseEntity<UsuarioDTO> update(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
+        log.info("Atualizando usuário....");
+        UsuarioDTO usuarioDTO = usuarioService.editar(usuarioCreateDTO);
+        log.info("Usuário atualizado com sucesso!");
+
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+
+    }
 }

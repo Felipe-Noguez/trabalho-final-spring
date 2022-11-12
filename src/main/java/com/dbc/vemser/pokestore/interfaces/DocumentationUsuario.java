@@ -47,29 +47,29 @@ public interface DocumentationUsuario {
     @GetMapping// localhost:1521/usuario
     public ResponseEntity<PageDTO<UsuarioDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
-    @Operation(summary = "criar novo usuario", description = "Cria novo usuario no banco")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Cria novo usuario"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PostMapping //localhost:1521/usuario
-    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioCreateDTO usuario) throws RegraDeNegocioException;
+//    @Operation(summary = "criar novo usuario", description = "Cria novo usuario no banco")
+//    @ApiResponses(
+//            value = {
+//                    @ApiResponse(responseCode = "200", description = "Cria novo usuario"),
+//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+//            }
+//    )
+//    @PostMapping //localhost:1521/usuario
+//    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioCreateDTO usuario) throws RegraDeNegocioException;
 
-    @Operation(summary = "modificar usuario selecionado por id", description = "Modifica um usuario selecionado")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Modifica um usuario"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-
-    @PutMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id,
-                                             @RequestBody @Valid UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException;
+//    @Operation(summary = "modificar usuario selecionado por id", description = "Modifica um usuario selecionado")
+//    @ApiResponses(
+//            value = {
+//                    @ApiResponse(responseCode = "200", description = "Modifica um usuario"),
+//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+//            }
+//    )
+//
+//    @PutMapping("/{idUsuario}")
+//    public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id,
+//                                             @RequestBody @Valid UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException;
     @Operation(summary = "deletar usuario selecionado por id", description = "Deleta usuario selecionado")
     @ApiResponses(
             value = {
