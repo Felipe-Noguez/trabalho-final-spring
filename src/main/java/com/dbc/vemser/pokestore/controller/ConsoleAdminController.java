@@ -23,7 +23,7 @@ public class ConsoleAdminController {
 
     private final UsuarioService usuarioService;
 
-    @PostMapping
+    @PostMapping("/cargos")
     public ResponseEntity<UsuarioDTO> atualizarCargos(@RequestBody @Valid UsuarioCargosDTO usuarioCargosDTO) throws RegraDeNegocioException {
         log.info("Atualizando . . .");
         return ResponseEntity.ok(usuarioService.atualizarCargos(usuarioCargosDTO));

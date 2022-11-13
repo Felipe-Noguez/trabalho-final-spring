@@ -1,6 +1,9 @@
 package com.dbc.vemser.pokestore.controller;
 
-import com.dbc.vemser.pokestore.dto.*;
+import com.dbc.vemser.pokestore.dto.PageDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioRelatorioGeralDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.interfaces.DocumentationUsuario;
 import com.dbc.vemser.pokestore.service.UsuarioService;
@@ -11,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j

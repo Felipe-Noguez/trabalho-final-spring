@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
@@ -54,7 +53,7 @@ public class LoginController {
         return ResponseEntity.ok(usuarioService.atualizaSenha(senha));
     }
 
-    @GetMapping
+    @GetMapping("/usuario")
     public ResponseEntity<UsuarioDTO> verificarLogin() throws RegraDeNegocioException {
         return ResponseEntity.ok(usuarioService.getLoggedUser());
     }
@@ -66,6 +65,5 @@ public class LoginController {
         log.info("Usuário atualizado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
-
     }
 }

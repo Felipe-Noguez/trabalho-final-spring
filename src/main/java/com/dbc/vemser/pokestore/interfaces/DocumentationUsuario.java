@@ -1,15 +1,20 @@
 package com.dbc.vemser.pokestore.interfaces;
 
 
-import com.dbc.vemser.pokestore.dto.*;
+import com.dbc.vemser.pokestore.dto.PageDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioRelatorioGeralDTO;
+import com.dbc.vemser.pokestore.dto.UsuarioRelatorioPedidoDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
 import java.util.List;
 
 public interface DocumentationUsuario {

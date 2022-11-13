@@ -68,15 +68,7 @@ public class UsuarioService {
         usuarioEntityAtualizar = usuarioRepository.save(usuarioEntityAtualizar);
         emailService.sendEmailUsuario(objectMapper.convertValue(usuarioEntityAtualizar, UsuarioDTO.class), Requisicao.UPDATE);
 
-        List<CargoDto> cargos = usuarioEntityAtualizar.getCargos().stream()
-                .map(x -> {
-                    try {
-                        return objectMapper.convertValue(findCargosByNome(x.getNome()), CargoDto.class);
-                    } catch (RegraDeNegocioException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .toList();
+        List<CargoDto> cargos = getCargoDtos(usuarioEntityAtualizar);
 
         UsuarioDTO usuarioDTO =  objectMapper.convertValue(usuarioEntityAtualizar, UsuarioDTO.class);
         usuarioDTO.setCargos(cargos);
@@ -87,15 +79,7 @@ public class UsuarioService {
     public UsuarioDTO atualizarCargos(UsuarioCargosDTO usuarioCargosDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = findById(usuarioCargosDTO.getIdUsuario());
 
-        Set<CargoEntity> cargos = usuarioCargosDTO.getCargos().stream()
-                .map(x -> {
-                    try {
-                        return findCargosByNome(x.getNome());
-                    } catch (RegraDeNegocioException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toSet());
+        Set<CargoEntity> cargos = getCargos(usuarioCargosDTO);
 
         usuarioEntity.setCargos(cargos);
         usuarioRepository.save(usuarioEntity);
@@ -143,16 +127,6 @@ public class UsuarioService {
         return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, usuariosDaPagina);
     }
 
-    @NotNull
-    private UsuarioDTO getUsuarioDTO(UsuarioEntity usuarioEntity) {
-        UsuarioDTO dto = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        dto.setCargos(usuarioEntity.getCargos().stream()
-                .map(x -> objectMapper.convertValue(x, CargoDto.class))
-                .toList());
-
-        return dto;
-    }
-
     public List<UsuarioRelatorioPedidoDTO> listarRelatorioUsuarioPedido (Integer id) {
         return  usuarioRepository.relatorioUsuarioPedido(id);
     }
@@ -183,11 +157,6 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("Usuario não encontrado"));
     }
 
-    private CargoEntity findCargosByNome(String nome) throws RegraDeNegocioException {
-        return cargoRepository.findByNome(nome)
-                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
-    }
-
     public UsuarioDTO desativarUsuario (Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = findById(idUsuario);
         usuarioEntity.setContaStatus('0');
@@ -201,7 +170,46 @@ public class UsuarioService {
         usuarioEntity.setContaStatus('0');
         usuarioRepository.save(usuarioEntity);
 
-        List<CargoDto> cargos = usuarioEntity.getCargos().stream()
+        List<CargoDto> cargos = getCargoDtos(usuarioEntity);
+
+        UsuarioDTO usuarioDTO =  objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        usuarioDTO.setCargos(cargos);
+        return usuarioDTO;
+    }
+
+//    ------------------------- METODOS PRIVADOS --------------------------------------
+
+    private CargoEntity findCargosByNome(String nome) throws RegraDeNegocioException {
+        return cargoRepository.findByNome(nome)
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+    }
+
+    @NotNull
+    private UsuarioDTO getUsuarioDTO(UsuarioEntity usuarioEntity) {
+        UsuarioDTO dto = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        dto.setCargos(usuarioEntity.getCargos().stream()
+                .map(x -> objectMapper.convertValue(x, CargoDto.class))
+                .toList());
+
+        return dto;
+    }
+
+    @NotNull
+    private Set<CargoEntity> getCargos(UsuarioCargosDTO usuarioCargosDTO) {
+        return usuarioCargosDTO.getCargos().stream()
+                .map(x -> {
+                    try {
+                        return findCargosByNome(x.getNome());
+                    } catch (RegraDeNegocioException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toSet());
+    }
+
+    @NotNull
+    private List<CargoDto> getCargoDtos(UsuarioEntity usuarioEntityAtualizar) {
+        return usuarioEntityAtualizar.getCargos().stream()
                 .map(x -> {
                     try {
                         return objectMapper.convertValue(findCargosByNome(x.getNome()), CargoDto.class);
@@ -210,10 +218,6 @@ public class UsuarioService {
                     }
                 })
                 .toList();
-
-        UsuarioDTO usuarioDTO =  objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        usuarioDTO.setCargos(cargos);
-        return usuarioDTO;
     }
 }
 
