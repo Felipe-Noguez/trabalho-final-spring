@@ -43,29 +43,6 @@ public class UsuarioController implements DocumentationUsuario {
         return ResponseEntity.ok(usuarioService.listar(pagina, tamanho));
     }
 
-//    @Override
-//    @PostMapping //localhost:1521/usuario
-//    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioCreateDTO usuario) throws RegraDeNegocioException {
-//
-//        log.info("Criando usuario novo....");
-//        UsuarioDTO usuarioDTO = usuarioService.adicionarUsuario(usuario);
-//        log.info("Usuario criado com sucesso!");
-//
-//        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
-//    }
-
-//    @Override
-//    @PutMapping("/{idUsuario}")
-//    public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer id,
-//                                             @RequestBody @Valid UsuarioCreateDTO usuarioAtualizar) throws RegraDeNegocioException {
-//        log.info("Atualizando usuário....");
-//        UsuarioDTO usuarioDTO = usuarioService.editar(id, usuarioAtualizar);
-//        log.info("Usuário atualizado com sucesso!");
-//
-//        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
-//
-//    }
-
     @Override
     @DeleteMapping("/{idUsuario}") // localhost:1521/pessoa/10
     public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer id) throws RegraDeNegocioException {
