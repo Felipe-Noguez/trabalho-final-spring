@@ -47,9 +47,9 @@ public class UsuarioService {
 
         usuarioEntity = usuarioRepository.save(usuarioEntity);
 
-        //        emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
-
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        emailService.sendEmailUsuario(usuarioDTO, Requisicao.CREATE);
+
         usuarioDTO.getCargos().add(objectMapper.convertValue(cargo, CargoDto.class));
         return usuarioDTO;
     }
