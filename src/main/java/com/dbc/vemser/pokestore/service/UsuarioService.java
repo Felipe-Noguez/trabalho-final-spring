@@ -61,6 +61,7 @@ public class UsuarioService {
         UsuarioEntity usuarioEntityAtualizar = objectMapper.convertValue(usuarioAtualizar, UsuarioEntity.class);
         usuarioEntityAtualizar.setIdUsuario(usuarioEncontrado.getIdUsuario());
         usuarioEntityAtualizar.setCargos(usuarioEncontrado.getCargos());
+        usuarioEntityAtualizar.setContaStatus('1');
 
         String senhaCriptografada = passwordEncoder.encode(usuarioAtualizar.getSenha());
         usuarioEntityAtualizar.setSenha(senhaCriptografada);
@@ -78,6 +79,7 @@ public class UsuarioService {
     //atualiza cargos
     public UsuarioDTO atualizarCargos(UsuarioCargosDTO usuarioCargosDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = findById(usuarioCargosDTO.getIdUsuario());
+        usuarioEntity.setContaStatus('1');
 
         Set<CargoEntity> cargos = getCargos(usuarioCargosDTO);
 
