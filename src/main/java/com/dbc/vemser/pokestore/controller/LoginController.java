@@ -53,7 +53,7 @@ public class LoginController {
         return ResponseEntity.ok(usuarioService.atualizarSenha(senha));
     }
 
-    @GetMapping("/usuario")
+    @GetMapping("/usuario-logado")
     public ResponseEntity<UsuarioDTO> verificarLogin() throws RegraDeNegocioException {
         return ResponseEntity.ok(usuarioService.getLoggedUser());
     }
