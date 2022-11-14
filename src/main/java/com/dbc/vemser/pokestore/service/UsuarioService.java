@@ -34,16 +34,20 @@ public class UsuarioService {
     private final CargoRepository cargoRepository;
     private final TokenService tokenService;
 
+    // constantes
+    private final char ATIVO = '1';
+    private final String ROLE_CLIENTE = "ROLE_CLIENTE";
+
     // criação de um objeto
     public UsuarioDTO adicionarUsuario(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, UsuarioEntity.class);
 
-        CargoEntity cargo = findCargosByNome("ROLE_CLIENTE");
+        CargoEntity cargo = findCargosByNome(ROLE_CLIENTE);
         usuarioEntity.getCargos().add(cargo);
 
         String senhaCriptografada = passwordEncoder.encode(usuarioCreateDTO.getSenha());
         usuarioEntity.setSenha(senhaCriptografada);
-        usuarioEntity.setContaStatus('1');
+        usuarioEntity.setContaStatus(ATIVO);
 
         usuarioEntity = usuarioRepository.save(usuarioEntity);
 
@@ -61,7 +65,7 @@ public class UsuarioService {
         UsuarioEntity usuarioEntityAtualizar = objectMapper.convertValue(usuarioAtualizar, UsuarioEntity.class);
         usuarioEntityAtualizar.setIdUsuario(usuarioEncontrado.getIdUsuario());
         usuarioEntityAtualizar.setCargos(usuarioEncontrado.getCargos());
-        usuarioEntityAtualizar.setContaStatus('1');
+        usuarioEntityAtualizar.setContaStatus(ATIVO);
 
         String senhaCriptografada = passwordEncoder.encode(usuarioAtualizar.getSenha());
         usuarioEntityAtualizar.setSenha(senhaCriptografada);
@@ -79,7 +83,7 @@ public class UsuarioService {
     //atualiza cargos
     public UsuarioDTO atualizarCargos(UsuarioCargosDTO usuarioCargosDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = findById(usuarioCargosDTO.getIdUsuario());
-        usuarioEntity.setContaStatus('1');
+        usuarioEntity.setContaStatus(ATIVO);
 
         Set<CargoEntity> cargos = getCargos(usuarioCargosDTO);
 
@@ -90,7 +94,7 @@ public class UsuarioService {
     }
 
     //enviar email para recuprar senha
-    public String enviaEmailParaRecuperarSenha(String email) throws RegraDeNegocioException {
+    public String enviarEmailParaRecuperarSenha(String email) throws RegraDeNegocioException {
         UsuarioEntity usuario = findByEmail(email);
 
         String token = tokenService.getTokenRecuperarSenha(usuario);
@@ -99,14 +103,14 @@ public class UsuarioService {
         return "Verifique seu email para trocar a senha.";
     }
 
-    public String atualizaSenha(String senha) throws RegraDeNegocioException {
+    public String atualizarSenha(String senha) throws RegraDeNegocioException {
         UsuarioEntity usuario = findById(getIdLoggedUser());
 
         String senhaCriptografada = passwordEncoder.encode(senha);
         usuario.setSenha(senhaCriptografada);
         usuarioRepository.save(usuario);
 
-        return "Senha alterada com sucesso";
+        return "Senha alterada com sucesso!";
     }
 
     // remoção

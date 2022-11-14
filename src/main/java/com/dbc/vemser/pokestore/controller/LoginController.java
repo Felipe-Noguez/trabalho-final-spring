@@ -34,7 +34,7 @@ public class LoginController {
     }
 
     @PostMapping("/cadastro")
-    public ResponseEntity<UsuarioDTO> cadastro(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException {
+    public ResponseEntity<UsuarioDTO> cadastrar(@Valid @RequestBody UsuarioCreateDTO usuario) throws RegraDeNegocioException {
 
         log.info("Cadastro de usuário em andamento . . .");
         UsuarioDTO usuarioDTO = usuarioService.adicionarUsuario(usuario);
@@ -44,13 +44,13 @@ public class LoginController {
     }
 
     @PostMapping("/esqueci-senha")
-    public ResponseEntity<String> esqueceuSenha(String email) throws RegraDeNegocioException {
-        return ResponseEntity.ok(usuarioService.enviaEmailParaRecuperarSenha(email));
+    public ResponseEntity<String> enviarRecuperacaoSenha(String email) throws RegraDeNegocioException {
+        return ResponseEntity.ok(usuarioService.enviarEmailParaRecuperarSenha(email));
     }
 
     @PostMapping("/trocar-senha")
-    public ResponseEntity<String> novaSenha(String senha) throws RegraDeNegocioException {
-        return ResponseEntity.ok(usuarioService.atualizaSenha(senha));
+    public ResponseEntity<String> atualizarSenha(String senha) throws RegraDeNegocioException {
+        return ResponseEntity.ok(usuarioService.atualizarSenha(senha));
     }
 
     @GetMapping("/usuario")
