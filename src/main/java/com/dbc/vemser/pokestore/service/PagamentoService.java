@@ -4,12 +4,10 @@ import com.dbc.vemser.pokestore.dto.PagamentoCreateDTO;
 import com.dbc.vemser.pokestore.dto.PagamentoDTO;
 import com.dbc.vemser.pokestore.entity.PagamentoEntity;
 import com.dbc.vemser.pokestore.entity.PedidoEntity;
-import com.dbc.vemser.pokestore.enums.StatusPagamento;
 import com.dbc.vemser.pokestore.repository.PagamentoRepository;
 import com.dbc.vemser.pokestore.repository.PedidoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.bson.Document;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -40,12 +38,7 @@ public class PagamentoService {
 
     public String mostrarMediaVendas(LocalDate dataInicio, LocalDate dataFim){
 
-        Double media = pagamentoRepository.findAllDataPagamentoBetween(dataInicio, dataFim).stream()
-                .filter(x -> x.getStatus().equals(StatusPagamento.PAGO))
-                .mapToDouble(PagamentoEntity::getValorTotal)
-                .average()
-                .getAsDouble();
-
+        Double media = pagamentoRepository.findAllDataPagamentoBetween(dataInicio, dataFim).getValorTotal();
         return "A média de vendas entre esse meses foi de: R$ "+ media;
     }
 }
