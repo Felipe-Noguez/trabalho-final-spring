@@ -147,7 +147,7 @@ public class UsuarioService {
     }
 
     public Integer getIdLoggedUser() {
-        return Integer.parseInt((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return Integer.parseInt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
     }
 
     public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
