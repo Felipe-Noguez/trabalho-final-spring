@@ -7,6 +7,7 @@ import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.CargoRepository;
 import com.dbc.vemser.pokestore.repository.UsuarioRepository;
+import com.dbc.vemser.pokestore.security.TokenService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -45,6 +46,9 @@ public class UsuarioServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private TokenService tokenService;
 
     @Mock
     private UsuarioRepository usuarioRepository;
@@ -98,7 +102,6 @@ public class UsuarioServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("Ahu82ha");
         when(usuarioRepository.save(any())).thenReturn(usuario);
         when(cargoRepository.findByNome(anyString())).thenReturn(Optional.of(getCargoEntity()));
-//        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn("sidbvsydbvsd5v4sd4v");
 
         // ACT
         UsuarioDTO usuarioDTO = usuarioService.editar(usuarioCreateDTO);
@@ -131,11 +134,61 @@ public class UsuarioServiceTest {
         assertNotNull(cargosDTO);
         assertNotEquals(usuarioEntity.getCargos(), usuarioDTO.getCargos());
     }
-    // Criar variaveis (SETUP)
 
-    // Ação (ACT)
+    @Test
+    public void deveTestarEnviarEmailParaRecuperarSenha() throws RegraDeNegocioException {
 
-    // Verificação (ASSERT)
+        // Criar variaveis (SETUP)
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        String token = "vdbvyd515v1d5151d";
+
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(Optional.of(usuarioEntity));
+        when(tokenService.getTokenRecuperarSenha(any(UsuarioEntity.class))).thenReturn(token);
+
+        // Ação (ACT)
+        String email = usuarioService.enviarEmailParaRecuperarSenha(usuarioEntity.getEmail());
+
+        // Verificação (ASSERT)
+        assertNotNull(email);
+        verify(emailService, times(1)).sendEmailRecuperarSenha(any(UsuarioEntity.class), anyString());
+    }
+
+    @Test
+    public void deveTestarAtualizarSenha() throws RegraDeNegocioException {
+
+        // SETUP
+        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+
+        // findById(id);
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        String senha = "minhasenha123";
+
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
+        when(passwordEncoder.encode(anyString())).thenReturn("Ahu82hajij878");
+        when(usuarioRepository.save(any())).thenReturn(usuarioEntity);
+
+        // ACT
+        usuarioService.atualizarSenha(senha);
+
+        // ASSERT
+        verify(usuarioRepository, times(1)).save(any(UsuarioEntity.class));
+    }
+
+    @Test
+    public void deveTestarGetLoggedUser() throws RegraDeNegocioException {
+        // SETUP
+        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.getLoggedUser();
+
+        assertNotNull(usuarioDTO);
+        assertEquals(usuarioEntity.getIdUsuario(), usuarioDTO.getIdUsuario());
+    }
 
     @Test
     public void deveListarPaginadoComSucesso() {
@@ -303,6 +356,7 @@ public class UsuarioServiceTest {
         usuarioEntity.setSenha("123");
         usuarioEntity.setTelefone("51988784");
         usuarioEntity.setContaStatus('1');
+        usuarioEntity.setIdUsuario(10);
 
         Set<CargoEntity> cargoEntities = new HashSet<>();
         cargoEntities.add(getCargoEntity());
