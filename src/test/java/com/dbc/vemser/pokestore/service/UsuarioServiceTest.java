@@ -310,6 +310,29 @@ public class UsuarioServiceTest {
 
     }
 
+    @Test
+    public void deveTestarDesativarConta() throws RegraDeNegocioException {
+        // Criar variaveis (SETUP)
+        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+
+        Character status = '0';
+        UsuarioEntity usuarioEntityRetorno = getUsuarioEntity();
+        usuarioEntityRetorno.setContaStatus(status);
+
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioEntityRetorno));
+        when(usuarioRepository.save(any())).thenReturn(usuarioEntityRetorno);
+        when(cargoRepository.findByNome(anyString())).thenReturn(Optional.of(getCargoEntity()));
+
+        // Ação (ACT)
+        UsuarioDTO usuarioDTODesativar = usuarioService.desativarConta();
+
+        // Verificação (ASSERT)
+        assertNotNull(usuarioDTODesativar);
+        assertEquals(usuarioEntityRetorno.getContaStatus(), usuarioDTODesativar.getContaStatus());
+
+    }
+
     private static UsuarioEntity getUsuarioEntity() {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         usuarioEntity.setNome("Alanis");
