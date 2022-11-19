@@ -18,6 +18,7 @@ public class UsuarioDTO {
     private String pix;
     private String cpf;
     private String telefone;
+    private Character contaStatus;
 
     private List<CargoDto> cargos = new ArrayList<>();
 

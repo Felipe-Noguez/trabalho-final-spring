@@ -185,7 +185,7 @@ public class UsuarioService {
 
 //    ------------------------- METODOS PRIVADOS --------------------------------------
 
-    private CargoEntity findCargosByNome(String nome) throws RegraDeNegocioException {
+    public CargoEntity findCargosByNome(String nome) throws RegraDeNegocioException {
         return cargoRepository.findByNome(nome)
                 .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
     }
