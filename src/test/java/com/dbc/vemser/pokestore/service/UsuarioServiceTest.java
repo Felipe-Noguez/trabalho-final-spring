@@ -2,6 +2,7 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.*;
 import com.dbc.vemser.pokestore.entity.CargoEntity;
+import com.dbc.vemser.pokestore.entity.ProdutoEntity;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.CargoRepository;
@@ -79,34 +80,32 @@ public class UsuarioServiceTest {
         assertEquals("Alanis", usuarioDTORetorno.getNome());
     }
 
-//    @Test
-//    public void deveTestarEditarUsuarioComSucesso() throws RegraDeNegocioException {
-//        // Criar variaveis (SETUP)
-//        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
-//        SecurityContextHolder.getContext().setAuthentication(dto);
-//
-//
-//
-//
-//        UsuarioCreateDTO usuarioCreateDTO = getUsuarioCreateDTO();
-//
-//        UsuarioEntity usuarioEntity = getUsuarioEntity();
-//        usuarioEntity.setNome("Alanis Morissette");
-//        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
-//
-//        String senha = "123";
-//        when(passwordEncoder.encode(senha)).thenReturn("Ahu82ha");
-//
-//        when(usuarioRepository.save(any())).thenReturn(usuarioEntity);
-//
-//        when(cargoRepository.findByNome(anyString())).thenReturn(Optional.of(getCargoEntity()));
-//
-//        // Ação (ACT)
-//        UsuarioDTO usuarioDTO = usuarioService.editar(usuarioCreateDTO);
-//
-//        // Verificação (ASSERT)
-//        assertEquals("Alanis Morissette", usuarioDTO.getNome());
-//    }
+    @Test
+    public void deveTestarEditarUsuarioComSucesso() throws RegraDeNegocioException {
+
+        // SETUP
+        Integer id = 5;
+        UsuarioCreateDTO usuarioCreateDTO = getUsuarioCreateDTO();
+        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+
+        // findById(id);
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        UsuarioEntity usuario = getUsuarioEntity();
+        usuario.setSenha("48jdye12");
+
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
+        when(passwordEncoder.encode(anyString())).thenReturn("Ahu82ha");
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+        when(cargoRepository.findByNome(anyString())).thenReturn(Optional.of(getCargoEntity()));
+//        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn("sidbvsydbvsd5v4sd4v");
+
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.editar(usuarioCreateDTO);
+
+        // ASSERT
+        assertNotNull(usuarioDTO);
+    }
 
     @Test
     public void deveTestarAtualizarCargos() throws RegraDeNegocioException {
