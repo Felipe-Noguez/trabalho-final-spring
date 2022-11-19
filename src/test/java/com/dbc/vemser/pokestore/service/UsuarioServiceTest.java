@@ -19,6 +19,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -81,7 +83,8 @@ public class UsuarioServiceTest {
 //    public void deveTestarEditarUsuarioComSucesso() throws RegraDeNegocioException {
 //        // Criar variaveis (SETUP)
 //        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
-//        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        SecurityContextHolder.getContext().setAuthentication(dto);
+//
 //
 //
 //
@@ -291,6 +294,20 @@ public class UsuarioServiceTest {
 
         // Verificação (ASSERT)
         verify(usuarioRepository, times(1)).delete(any());
+
+    }
+
+    @Test
+    public void deveTestarGetLoggedUser() {
+        // Criar variaveis (SETUP)
+        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+
+        // Ação (ACT)
+        Integer idUsuarioLogado = usuarioService.getIdLoggedUser();
+
+        // Verificação (ASSERT)
+        assertEquals(1, idUsuarioLogado);
 
     }
 
