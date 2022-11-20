@@ -350,7 +350,7 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void deveTestarGetLoggedUser() {
+    public void deveTestarGetIdLoggedUser() {
         // Criar variaveis (SETUP)
         UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(dto);
