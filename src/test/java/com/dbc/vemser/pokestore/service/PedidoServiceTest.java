@@ -179,24 +179,6 @@ public class PedidoServiceTest {
         // ASSERT
     }
 
-    @Test(expected = RegraDeNegocioException.class)
-    public void deveEditarPedidoComFracasso() throws RegraDeNegocioException {
-
-        //SETUP
-        Integer id = 3;
-        PedidoCreateDTO pedidoCreateDTO = getPedidoCreateDTO();
-        UsuarioEntity usuarioEntity = new UsuarioEntity();
-
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
-
-        //ACT
-        PedidoDTO pedidoDTO = pedidoService.editarPedido(id, pedidoCreateDTO);
-
-        //ASSERT
-        verify(pedidoRepository, times(1)).delete(any());
-
-    }
-
     public static CupomEntity getCupomEntity() {
         CupomEntity cupomEntity = new CupomEntity();
         cupomEntity.setIdCupom(33);
