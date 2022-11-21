@@ -85,6 +85,7 @@ public class PedidoService {
                     return pedidoDTO;
                 }).toList();
     }
+
     // remoção
     public void removerPedido(Integer id) throws RegraDeNegocioException {
         PedidoEntity pedidoEntity = findById(id);

@@ -2,6 +2,7 @@ package com.dbc.vemser.pokestore.controller;
 
 import com.dbc.vemser.pokestore.dto.AvaliacaoProdutoCreateDTO;
 import com.dbc.vemser.pokestore.dto.AvaliacaoProdutoDTO;
+import com.dbc.vemser.pokestore.dto.AvaliacaoProdutoUltimaSemanaDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.service.AvaliacaoProdutoService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,10 @@ public class AvaliacaoProdutoController {
         return ResponseEntity.ok(avaliacaoProdutoService.filtrarPorNota(notaAvaliacao));
     }
 
-
+    @GetMapping("/filtrar-avaliacao-ultima-semana")
+    public ResponseEntity<List<AvaliacaoProdutoUltimaSemanaDTO>> filtarAvaliacaoUltimaSemana() throws RegraDeNegocioException {
+        log.info("Filtrando busca, aguarde . . .");
+        return ResponseEntity.ok(avaliacaoProdutoService.filtarAvaliacaoUltimaSemana());
+    }
 
 }
