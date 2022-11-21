@@ -92,6 +92,17 @@ public class AvaliacaoProdutoTest {
         assertEquals(1, avaliacaoProdutoDTO.size());
     }
 
+    @Test
+    public void deveTestarFiltrarAvaliacaoUltimaSemana() throws RegraDeNegocioException {
+        // SETUP
+
+        // ACT
+        List<AvaliacaoProdutoUltimaSemanaDTO> produtoUltimaSemanaDTOS = avaliacaoProdutoService.filtarAvaliacaoUltimaSemana();
+
+        // ASSERT
+        assertNotNull(produtoUltimaSemanaDTOS);
+        assertEquals("33", getAvaliacaoProdutoUltimaSemanaDTO().getIdAvaliacao());
+    }
 
     private static AvaliacaoProdutoEntity getAvaliacaoProdutoEntity() {
         AvaliacaoProdutoEntity avaliacaoProdutoEntity = new AvaliacaoProdutoEntity();
@@ -138,4 +149,14 @@ public class AvaliacaoProdutoTest {
 
         return produtoEntity;
     }
+
+    private AvaliacaoProdutoUltimaSemanaDTO getAvaliacaoProdutoUltimaSemanaDTO() {
+        AvaliacaoProdutoUltimaSemanaDTO produtoUltimaSemanaDTO = new AvaliacaoProdutoUltimaSemanaDTO();
+        produtoUltimaSemanaDTO.setNomeProduto("Pikachu");
+        produtoUltimaSemanaDTO.setIdAvaliacao("33");
+        produtoUltimaSemanaDTO.setNomeUsuario("Alanis");
+
+        return produtoUltimaSemanaDTO;
+    }
+
 }
