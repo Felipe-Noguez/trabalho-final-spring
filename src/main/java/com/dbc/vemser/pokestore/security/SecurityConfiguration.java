@@ -31,8 +31,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) ->
                         authz.antMatchers("/login", "/login/cadastro", "/login/esqueci-senha").permitAll()
                                 .antMatchers("/login/**", "/login/trocar-senha", "/usuario/desativacao").hasAnyRole("CLIENTE","VENDEDOR","ADMIN")
-                                .antMatchers("/**").hasRole("ADMIN")
                                 .antMatchers("/pedido/**").hasRole("CLIENTE")
+                                .antMatchers("/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.GET,"/cupom", "/produto").hasAnyRole("CLIENTE", "VENDEDOR")
                                 .antMatchers("/produto/**").hasRole("VENDEDOR")
                                 .antMatchers("/console-admin/**").hasRole("ADMIN")
