@@ -45,4 +45,9 @@ public class PagamentoController {
     public ResponseEntity<String> mostrarMediaVendasDoMes(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicial, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFinal){
         return ResponseEntity.ok(pagamentoService.mostrarMediaVendas(dataInicial, dataFinal));
     }
+
+    @GetMapping("/valor-pagamento")
+    public ResponseEntity<List<PagamentoDTO>> mostrarPagamentosMaiorQue(Double valor){
+        return ResponseEntity.ok(pagamentoService.listarPagamentosMaiorQue(valor));
+    }
 }

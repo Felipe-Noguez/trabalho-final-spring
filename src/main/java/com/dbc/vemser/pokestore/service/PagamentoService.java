@@ -41,4 +41,8 @@ public class PagamentoService {
         Double media = pagamentoRepository.findAllDataPagamentoBetween(dataInicio, dataFim).getValorTotal();
         return "A média de vendas entre esse meses foi de: R$ "+ media;
     }
+
+    public List<PagamentoDTO> listarPagamentosMaiorQue(Double valor){
+        return pagamentoRepository.findAllPorPrecoMaiorQue(valor).stream().map(x -> objectMapper.convertValue(x, PagamentoDTO.class)).toList();
+    }
 }

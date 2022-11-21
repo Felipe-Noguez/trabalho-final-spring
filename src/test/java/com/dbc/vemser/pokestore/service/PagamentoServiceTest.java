@@ -24,6 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -100,7 +101,22 @@ public class PagamentoServiceTest {
         // (ASSERT)
         assertNotNull(result);
         assertEquals("A média de vendas entre esse meses foi de: R$ 1250.0", result);
+    }
 
+    @Test
+    public void deveTestarlistarPagamentosMaiorQue(){
+        // (SETUP)
+        Double valor = 50.0;
+        PagamentoEntity pagamentoEntity = getPagamentoEntity();
+        List<PagamentoEntity> list = new ArrayList<>();
+        list.add(pagamentoEntity);
+        when(pagamentoRepository.findAllPorPrecoMaiorQue(any(Double.class))).thenReturn(list);
+        //(ACT)
+        List<PagamentoDTO> pagamentoDTOS = pagamentoService.listarPagamentosMaiorQue(valor);
+
+        // (ASSERT)
+        assertNotNull(pagamentoDTOS);
+        assertEquals(1, pagamentoDTOS.size());
     }
 
     private PagamentoCreateDTO getPagamentoCreateDTO() {
