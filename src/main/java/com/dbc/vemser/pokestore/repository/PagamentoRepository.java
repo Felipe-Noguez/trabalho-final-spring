@@ -1,7 +1,6 @@
 package com.dbc.vemser.pokestore.repository;
 
 import com.dbc.vemser.pokestore.dto.PagamentoDatasDTO;
-import com.dbc.vemser.pokestore.entity.AvaliacaoProdutoEntity;
 import com.dbc.vemser.pokestore.entity.PagamentoEntity;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;

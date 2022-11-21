@@ -4,7 +4,6 @@ import com.dbc.vemser.pokestore.dto.AvaliacaoProdutoUltimaSemanaDTO;
 import com.dbc.vemser.pokestore.entity.AvaliacaoProdutoEntity;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;

@@ -2,7 +2,6 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.*;
 import com.dbc.vemser.pokestore.entity.CargoEntity;
-import com.dbc.vemser.pokestore.entity.ProdutoEntity;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.CargoRepository;

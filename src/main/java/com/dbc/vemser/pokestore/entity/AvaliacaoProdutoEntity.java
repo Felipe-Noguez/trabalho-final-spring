@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Document(collection = "avaliacao_produto")
 @AllArgsConstructor

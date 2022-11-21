@@ -1,6 +1,9 @@
 package com.dbc.vemser.pokestore.service;
 
-import com.dbc.vemser.pokestore.dto.*;
+import com.dbc.vemser.pokestore.dto.PedidoCreateDTO;
+import com.dbc.vemser.pokestore.dto.PedidoDTO;
+import com.dbc.vemser.pokestore.dto.ProdutoCreateDTO;
+import com.dbc.vemser.pokestore.dto.ProdutoIdQuantidadeCreateDTO;
 import com.dbc.vemser.pokestore.entity.*;
 import com.dbc.vemser.pokestore.enums.Tipos;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
@@ -17,17 +20,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
