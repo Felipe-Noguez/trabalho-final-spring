@@ -1,6 +1,8 @@
 package com.dbc.vemser.pokestore.service;
 
+import com.dbc.vemser.pokestore.dto.CupomDTO;
 import com.dbc.vemser.pokestore.dto.PedidoDTO;
+import com.dbc.vemser.pokestore.dto.TopicoCupomDto;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.enums.Requisicao;
@@ -85,6 +87,37 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
+    public void sendEmailCupom(String email, CupomDTO cupomDTO) {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("subject");
+            mimeMessageHelper.setText(geContentFromTemplateCupom(cupomDTO), true);
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String geContentFromTemplateCupom(CupomDTO cupomDTO) throws IOException, TemplateException {
+        Map<String, Object> dados = new HashMap<>();
+        Template template = null;
+        dados.put("nomecupom", cupomDTO.getNome());
+        dados.put("email", from);
+        dados.put("preco", cupomDTO.getPreco());
+        dados.put("data", cupomDTO.getDataVencimento());
+
+        template = fmConfiguration.getTemplate("email-template-cupom.html");
+
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
+    }
+
 
     public String geContentFromTemplate(UsuarioDTO usuarioDTO, Requisicao requisicao) throws IOException, TemplateException, RegraDeNegocioException {
         Map<String, Object> dados = new HashMap<>();

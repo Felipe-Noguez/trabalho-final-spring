@@ -5,6 +5,7 @@ import com.dbc.vemser.pokestore.dto.PagamentoDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.interfaces.DocumentationPagamento;
 import com.dbc.vemser.pokestore.service.PagamentoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +28,7 @@ public class PagamentoController implements DocumentationPagamento {
     private final PagamentoService pagamentoService;
 
     @PostMapping
-    public ResponseEntity<PagamentoDTO> criar(@RequestBody @Valid PagamentoCreateDTO pagamentoCreateDTO) throws RegraDeNegocioException {
+    public ResponseEntity<PagamentoDTO> criar(@RequestBody @Valid PagamentoCreateDTO pagamentoCreateDTO) throws RegraDeNegocioException, JsonProcessingException {
 
         log.info("Criando pagamento novo....");
         PagamentoDTO pagamentoDTO = pagamentoService.criarPagamento(pagamentoCreateDTO);

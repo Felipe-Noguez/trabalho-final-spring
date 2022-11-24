@@ -41,7 +41,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             " pp.idProdutoPedido," +
             " pp.quantidade," +
             " c.idCupom," +
-            " c.valor " +
+            " c.preco " +
             ")" +
             " from USUARIO u " +
             " left join u.pedidos pe " +

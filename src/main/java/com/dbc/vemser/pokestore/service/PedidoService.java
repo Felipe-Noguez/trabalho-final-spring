@@ -41,7 +41,7 @@ public class PedidoService {
         adicionarPedido(pedido, pedidoEntity);
 
         if (cupomEntity != null) {
-            pedidoEntity.setValorFinal(pedidoEntity.getValorFinal() - cupomEntity.getValor());
+            pedidoEntity.setValorFinal(pedidoEntity.getValorFinal() - cupomEntity.getPreco());
         }
 
         emailService.sendEmailPedido(objectMapper.convertValue(usuario, UsuarioDTO.class),
@@ -67,7 +67,7 @@ public class PedidoService {
         adicionarPedido(pedidoAtualizar, pedidoEntity);
 
         if (cupomEntity != null) {
-            pedidoEntity.setValorFinal(pedidoEntity.getValorFinal() - cupomEntity.getValor());
+            pedidoEntity.setValorFinal(pedidoEntity.getValorFinal() - cupomEntity.getPreco());
         }
 
         emailService.sendEmailPedido(objectMapper.convertValue(usuario, UsuarioDTO.class),

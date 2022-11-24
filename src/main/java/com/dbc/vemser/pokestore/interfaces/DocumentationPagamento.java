@@ -3,6 +3,7 @@ package com.dbc.vemser.pokestore.interfaces;
 import com.dbc.vemser.pokestore.dto.PagamentoCreateDTO;
 import com.dbc.vemser.pokestore.dto.PagamentoDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,7 +28,7 @@ public interface DocumentationPagamento {
             }
     )
     @PostMapping
-    public ResponseEntity<PagamentoDTO> criar(@RequestBody @Valid PagamentoCreateDTO pagamentoCreateDTO) throws RegraDeNegocioException;
+    public ResponseEntity<PagamentoDTO> criar(@RequestBody @Valid PagamentoCreateDTO pagamentoCreateDTO) throws RegraDeNegocioException, JsonProcessingException;
 
     @Operation(summary = "Listar pagamento", description = "Realiza a listagem do pagamento no banco")
     @ApiResponses(

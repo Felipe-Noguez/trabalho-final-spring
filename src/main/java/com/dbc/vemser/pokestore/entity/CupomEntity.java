@@ -1,6 +1,5 @@
 package com.dbc.vemser.pokestore.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -25,8 +25,14 @@ public class CupomEntity {
     @Column(name = "id_cupom")
     private Integer idCupom;
 
-    @Column(name = "desconto")
-    private Double valor;
+    @Column(name = "preco")
+    private Double preco;
+
+    @Column(name = "nome")
+    private String nome;
+
+    @Column(name = "data_vencimento")
+    private LocalDate dataVencimento;
 
     @JsonIgnore
     @OneToMany(mappedBy = "cupom", fetch = FetchType.LAZY)
