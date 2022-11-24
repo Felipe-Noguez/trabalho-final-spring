@@ -182,7 +182,7 @@ public class PedidoServiceTest {
     public static CupomEntity getCupomEntity() {
         CupomEntity cupomEntity = new CupomEntity();
         cupomEntity.setIdCupom(33);
-        cupomEntity.setValor(69.90);
+        cupomEntity.setPreco(69.90);
 
         Set<PedidoEntity> pedidoEntities = new HashSet<>();
         pedidoEntities.add(getPedidoEntity());

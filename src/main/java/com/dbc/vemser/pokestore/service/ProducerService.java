@@ -22,7 +22,7 @@ import java.util.UUID;
 @Slf4j
 public class ProducerService {
 
-    private static final Integer PARTICAO = 1; //nossa partição
+    private static final Integer PARTICAO = 1;
     @Value("${spring.kafka.consumer.client-id}")
     private String usuario;
     @Value("${kafka.topic}")

@@ -50,7 +50,7 @@ public class CupomServiceTest {
         CupomCreateDTO cupomCreateDTO = new CupomCreateDTO();
 
         CupomEntity cupomEntity = new CupomEntity();
-        cupomEntity.setValor(150.0);
+        cupomEntity.setPreco(150.0);
 
         when(cupomRepository.save(any(CupomEntity.class))).thenReturn(cupomEntity);
 
@@ -59,7 +59,7 @@ public class CupomServiceTest {
 
     // ASSERT
         assertNotNull(cupomDTO);
-        assertEquals(150.0, cupomDTO.getValor());
+        assertEquals(150.0, cupomDTO.getPreco());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class CupomServiceTest {
         // findById(id);
         CupomEntity cupomEntity = getCupomEntity();
         CupomEntity cupom = getCupomEntity();
-        cupom.setValor(180.0);
+        cupom.setPreco(180.0);
         when(cupomRepository.findById(anyInt())).thenReturn(Optional.of(cupomEntity));
 
         when(cupomRepository.save(any())).thenReturn(cupom);
@@ -112,7 +112,7 @@ public class CupomServiceTest {
 
         // ASSERT
         assertNotNull(cupomDTO);
-        assertNotEquals(160.0, cupomDTO.getValor());
+        assertNotEquals(160.0, cupomDTO.getPreco());
     }
 
     @Test
@@ -133,7 +133,7 @@ public class CupomServiceTest {
 
     private CupomCreateDTO getCupomCreateDTO() {
         CupomCreateDTO cupomCreateDTO = new CupomCreateDTO();
-        cupomCreateDTO.setValor(120.0);
+        cupomCreateDTO.setPreco(120.0);
 
         return cupomCreateDTO;
     }
@@ -141,7 +141,7 @@ public class CupomServiceTest {
     private CupomEntity getCupomEntity() {
         CupomEntity cupomEntity = new CupomEntity();
         cupomEntity.setIdCupom(12);
-        cupomEntity.setValor(160.0);
+        cupomEntity.setPreco(160.0);
 
         return cupomEntity;
     }
