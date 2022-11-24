@@ -22,5 +22,11 @@ public interface PagamentoRepository extends MongoRepository<PagamentoEntity, In
             "{ '$match': { 'valorTotal': { $gte: ?0 } } }"
     })
     List<PagamentoEntity> findAllPorPrecoMaiorQue(Double valor);
+
+
+    @Aggregation(pipeline = {
+            "{ '$match': { 'dataPagamento': { $gte: ?0 } } }",
+    })
+    List<PagamentoEntity> buscarPagamentoUltimaSemana(LocalDate ultimaSemana);
 }
 

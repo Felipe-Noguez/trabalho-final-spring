@@ -6,12 +6,15 @@ import com.dbc.vemser.pokestore.dto.TopicoCupomDto;
 import com.dbc.vemser.pokestore.entity.PagamentoEntity;
 import com.dbc.vemser.pokestore.entity.PedidoEntity;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
+import com.dbc.vemser.pokestore.enums.StatusPagamento;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
 import com.dbc.vemser.pokestore.repository.PagamentoRepository;
 import com.dbc.vemser.pokestore.repository.PedidoRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,14 +24,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PagamentoService {
 
+    @Value("${email.admin}")
+    String emailAdmin;
+
     private final PagamentoRepository pagamentoRepository;
     private final PedidoRepository pedidoRepository;
     private final UsuarioService usuarioService;
     private final ProducerService producerService;
+    private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
     private static final String NOME_CUPOM = "Gold gratis com os geekers";
     private static final Double PRECO = null;
+    private final LocalDate DATA_RELATORIO = LocalDate.now().minusDays(7);
+    private static final String TIME_ZONE = "America/Sao_Paulo";
 
 
     public PagamentoDTO criarPagamento(PagamentoCreateDTO dto) throws RegraDeNegocioException, JsonProcessingException {
@@ -66,5 +75,31 @@ public class PagamentoService {
 
     public List<PagamentoDTO> listarPagamentosMaiorQue(Double valor){
         return pagamentoRepository.findAllPorPrecoMaiorQue(valor).stream().map(x -> objectMapper.convertValue(x, PagamentoDTO.class)).toList();
+    }
+
+    @Scheduled(cron = "0 0 22 * * FRI", zone = TIME_ZONE)
+    public void gerarRelatorioVendasSemanal() {
+        List<PagamentoEntity> listRelatorio = pagamentoRepository.buscarPagamentoUltimaSemana(DATA_RELATORIO);
+        Double totalPagos = listRelatorio.stream()
+                .filter(x-> x.getStatus().equals(StatusPagamento.PAGO))
+                .mapToDouble(PagamentoEntity::getValorTotal)
+                .sum();
+
+        Double totalCancelado = listRelatorio.stream()
+                .filter(x -> x.getStatus().equals(StatusPagamento.CANCELADO))
+                .mapToDouble(PagamentoEntity::getValorTotal)
+                .sum();
+
+        Double totalPendente = listRelatorio.stream()
+                .filter(x -> x.getStatus().equals(StatusPagamento.PENDENTE))
+                .mapToDouble(PagamentoEntity::getValorTotal)
+                .sum();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Total de pedidos pagos: R$"+totalPagos+"<br>");
+        stringBuilder.append("Total de pedidos pendentes: R$"+totalPendente+"<br>");
+        stringBuilder.append("Total de pedidos cancelados: R$"+totalCancelado+"<br>");
+
+        emailService.sendRelatorioSemanal(stringBuilder.toString(), emailAdmin);
     }
 }

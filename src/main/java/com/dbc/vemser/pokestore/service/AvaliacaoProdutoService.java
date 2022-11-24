@@ -23,7 +23,7 @@ public class AvaliacaoProdutoService {
     private final UsuarioService usuarioService;
     private final ProdutoService produtoService;
     private final ObjectMapper objectMapper;
-    private final LocalDate ultimaSemana = LocalDate.now().minusDays(7);
+    private final LocalDate ULTIMA_SEMANA = LocalDate.now().minusDays(7);
 
 
     public AvaliacaoProdutoDTO cadastrarAvaliacao(AvaliacaoProdutoCreateDTO avaliacaoProdutoCreateDTO, Integer idProduto) throws RegraDeNegocioException {
@@ -50,7 +50,7 @@ public class AvaliacaoProdutoService {
     }
 
     public List<AvaliacaoProdutoUltimaSemanaDTO> filtarAvaliacaoUltimaSemana() throws RegraDeNegocioException {
-        return avaliacaoProdutoRepository.buscarAvaliacaoUltimaSemana(ultimaSemana)
+        return avaliacaoProdutoRepository.buscarAvaliacaoUltimaSemana(ULTIMA_SEMANA)
                 .stream()
                 .map(avaliacaoProdutoEntity -> objectMapper.convertValue(avaliacaoProdutoEntity, AvaliacaoProdutoUltimaSemanaDTO.class))
                 .toList();

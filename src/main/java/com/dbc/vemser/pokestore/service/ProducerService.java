@@ -1,6 +1,5 @@
 package com.dbc.vemser.pokestore.service;
 
-import com.dbc.vemser.pokestore.dto.CupomCreateDTO;
 import com.dbc.vemser.pokestore.dto.TopicoCupomDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

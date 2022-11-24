@@ -2,7 +2,6 @@ package com.dbc.vemser.pokestore.service;
 
 import com.dbc.vemser.pokestore.dto.CupomDTO;
 import com.dbc.vemser.pokestore.dto.PedidoDTO;
-import com.dbc.vemser.pokestore.dto.TopicoCupomDto;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
 import com.dbc.vemser.pokestore.entity.UsuarioEntity;
 import com.dbc.vemser.pokestore.enums.Requisicao;
@@ -103,6 +102,34 @@ public class EmailService {
         } catch (MessagingException | IOException | TemplateException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendRelatorioSemanal(String relatorio, String email) {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("subject");
+            mimeMessageHelper.setText(geContentFromTemplateRelatorio(relatorio), true);
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String geContentFromTemplateRelatorio(String relatorio) throws IOException, TemplateException{
+        Map<String, Object> dados = new HashMap<>();
+        Template template = null;
+        dados.put("relatorio", relatorio);
+        dados.put("email", from);
+
+        template = fmConfiguration.getTemplate("email-template-relatorio.html");
+
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
 
     private String geContentFromTemplateCupom(CupomDTO cupomDTO) throws IOException, TemplateException {
