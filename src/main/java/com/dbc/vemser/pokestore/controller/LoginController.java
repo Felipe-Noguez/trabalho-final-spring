@@ -4,6 +4,7 @@ import com.dbc.vemser.pokestore.dto.LoginDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioCreateDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
+import com.dbc.vemser.pokestore.interfaces.DocumentationLogin;
 import com.dbc.vemser.pokestore.security.TokenService;
 import com.dbc.vemser.pokestore.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import javax.validation.Valid;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/login")
-public class LoginController {
+public class LoginController implements DocumentationLogin {
 
     private final UsuarioService usuarioService;
     private final TokenService tokenService;

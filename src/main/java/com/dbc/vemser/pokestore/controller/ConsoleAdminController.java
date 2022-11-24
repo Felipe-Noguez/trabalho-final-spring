@@ -4,6 +4,7 @@ package com.dbc.vemser.pokestore.controller;
 import com.dbc.vemser.pokestore.dto.UsuarioCargosDTO;
 import com.dbc.vemser.pokestore.dto.UsuarioDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
+import com.dbc.vemser.pokestore.interfaces.DocumentationConsoleAdmin;
 import com.dbc.vemser.pokestore.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import javax.validation.Valid;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/console-admin")
-public class ConsoleAdminController {
+public class ConsoleAdminController implements DocumentationConsoleAdmin {
 
     private final UsuarioService usuarioService;
 

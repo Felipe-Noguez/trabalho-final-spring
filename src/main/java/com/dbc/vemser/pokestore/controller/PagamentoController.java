@@ -3,6 +3,7 @@ package com.dbc.vemser.pokestore.controller;
 import com.dbc.vemser.pokestore.dto.PagamentoCreateDTO;
 import com.dbc.vemser.pokestore.dto.PagamentoDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
+import com.dbc.vemser.pokestore.interfaces.DocumentationPagamento;
 import com.dbc.vemser.pokestore.service.PagamentoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/pagamento")
-public class PagamentoController {
+public class PagamentoController implements DocumentationPagamento {
 
     private final PagamentoService pagamentoService;
 

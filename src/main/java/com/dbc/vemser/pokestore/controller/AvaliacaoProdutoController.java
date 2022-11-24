@@ -4,6 +4,7 @@ import com.dbc.vemser.pokestore.dto.AvaliacaoProdutoCreateDTO;
 import com.dbc.vemser.pokestore.dto.AvaliacaoProdutoDTO;
 import com.dbc.vemser.pokestore.dto.AvaliacaoProdutoUltimaSemanaDTO;
 import com.dbc.vemser.pokestore.exceptions.RegraDeNegocioException;
+import com.dbc.vemser.pokestore.interfaces.DocumentationAvaliacaoProduto;
 import com.dbc.vemser.pokestore.service.AvaliacaoProdutoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/avaliacao-produto")
-public class AvaliacaoProdutoController {
+public class AvaliacaoProdutoController implements DocumentationAvaliacaoProduto {
 
     private  final AvaliacaoProdutoService avaliacaoProdutoService;
 
