@@ -34,8 +34,10 @@ public class PagamentoService {
     private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
-    private static final String NOME_CUPOM = "Gold gratis com os geekers";
-    private static final Double PRECO = null;
+    @Value("${kafka.nome.cupom}")
+    private String nomeCupom;
+    @Value("${kafka.preco.cupom}")
+    private Double preco;
     private final LocalDate DATA_RELATORIO = LocalDate.now().minusDays(7);
     private static final String TIME_ZONE = "America/Sao_Paulo";
 
@@ -53,8 +55,8 @@ public class PagamentoService {
 
         TopicoCupomDto topicoCupomDto = new TopicoCupomDto();
         topicoCupomDto.setEmail(usuario.getEmail());
-        topicoCupomDto.setNome(NOME_CUPOM);
-        topicoCupomDto.setPreco(PRECO);
+        topicoCupomDto.setNome(nomeCupom);
+        topicoCupomDto.setPreco(preco);
         topicoCupomDto.setDataVencimento(localDate);
 
         producerService.mensagemFactory(topicoCupomDto);
@@ -80,17 +82,17 @@ public class PagamentoService {
     @Scheduled(cron = "0 0 22 * * FRI", zone = TIME_ZONE)
     public void gerarRelatorioVendasSemanal() {
         List<PagamentoEntity> listRelatorio = pagamentoRepository.buscarPagamentoUltimaSemana(DATA_RELATORIO);
-        Double totalPagos = listRelatorio.stream()
+        double totalPagos = listRelatorio.stream()
                 .filter(x-> x.getStatus().equals(StatusPagamento.PAGO))
                 .mapToDouble(PagamentoEntity::getValorTotal)
                 .sum();
 
-        Double totalCancelado = listRelatorio.stream()
+        double totalCancelado = listRelatorio.stream()
                 .filter(x -> x.getStatus().equals(StatusPagamento.CANCELADO))
                 .mapToDouble(PagamentoEntity::getValorTotal)
                 .sum();
 
-        Double totalPendente = listRelatorio.stream()
+        double totalPendente = listRelatorio.stream()
                 .filter(x -> x.getStatus().equals(StatusPagamento.PENDENTE))
                 .mapToDouble(PagamentoEntity::getValorTotal)
                 .sum();
